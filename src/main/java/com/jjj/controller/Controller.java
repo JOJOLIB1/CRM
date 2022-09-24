@@ -7,7 +7,4 @@ package com.jjj.controller;
  * @create: 2022-09-24 20:54
  */
 public class Controller {
-    public void test() {
-        System.out.println("test冲突1");
-    }
 }
