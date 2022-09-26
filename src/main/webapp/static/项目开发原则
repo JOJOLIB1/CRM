@@ -91,9 +91,31 @@ CRM项目开发目标
             c.客户
             d.联系人
             e.交易
-            f.售后回访
+            f.售后回访  ×(不做)
             g.统计图表
+!!!物理模型设计
+    项目经理:通过项目原型和需求文档分析得出
+    涉及到的表
+        tbl_user 用户表
 
+        tbl_dic_type 数据字典类型表
+        tbl_dic_val  数据字典值表
+
+        tbl_activity         市场活动表
+        tbl_activity_remark  市场活动备注表
+
+        tbl_clue            线索表
+        tbl_clue_remark     线索备注表
+
+        tbl_customer          客户表
+        tbl_customer_remark   客户备注表
+
+        tbl_contacts            联系人表
+        tbl_contacts_remark     联系人备注表
+
+        tbl_tran               交易表
+        tbl_tran_remark        交易备注表
+        tbl_tran_history       交易历史表
 
 
 
