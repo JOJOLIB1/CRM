@@ -116,6 +116,7 @@
                         <artifactId>c3p0</artifactId>
                         <version>0.9.2</version>
                     </dependency>
+                    <!--这里配置了MySQL驱动的依赖,目的是为了让逆向工程注册驱动,找到对应的jar-->
                     <dependency>
                         <groupId>mysql</groupId>
                         <artifactId>mysql-connector-java</artifactId>
