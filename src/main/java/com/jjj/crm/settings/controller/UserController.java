@@ -1,16 +1,22 @@
 package com.jjj.crm.settings.controller;
 
+import com.jjj.crm.commons.constants.Constant;
 import com.jjj.crm.commons.pojo.ReturnMsg;
+import com.jjj.crm.commons.util.DateUtils;
 import com.jjj.crm.settings.pojo.User;
 import com.jjj.crm.settings.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 
 /**
  * @className: com.jjj.crm.settings.controller.UserController
@@ -31,8 +37,12 @@ public class UserController {
      * @return 视图名称,返回登录页面
      */
     @RequestMapping("/settings/qx/user/toLogin.do")
-    public String toLogin() {
-        return "settings/qx/user/login";
+    public ModelAndView toLogin(@CookieValue(value = "loginAct", defaultValue = Constant.DEFAULT_VALUE) String loginAct, @CookieValue(value = "loginPwd", defaultValue = Constant.DEFAULT_VALUE) String loginPwd) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("settings/qx/user/login");
+        mv.addObject(Constant.LOGIN_ACT, loginAct);
+        mv.addObject(Constant.LOGIN_PWD, loginPwd);
+        return mv;
     }
 
     /**
@@ -44,35 +54,59 @@ public class UserController {
      */
     @RequestMapping("/settings/qx/user/doLogin.do")
     @ResponseBody
-    public Object doLogin(String loginAct, String loginPwd, HttpServletRequest request) {
+    public Object doLogin(String loginAct, String loginPwd, boolean isRemPwd, HttpServletRequest request, HttpSession session, HttpServletResponse response) {
         // 1.调用业务层代码,获取查询到的实体类对象
         User user = userService.queryByLoginActAndPwd(loginAct, loginPwd);
         if (user == null) {
             // 2.1 账号或密码错误
-            returnMsg.setCode("0");
+            returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
             returnMsg.setMsg("账号或密码错误");
         }else {
             // 2.2 有对应的账号密码,仍需排除其他条件
             // 获取对应的年份
             String expireTime = user.getExpireTime();
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String curTime = format.format(new Date());
+            String curTime = DateUtils.formatDateTime();
             // 通过比较字符串来判断时间
             if (curTime.compareTo(expireTime) > 0) {
                 // 已过期
-                returnMsg.setCode("0");
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
                 returnMsg.setMsg("账号已过有效期,请联系管理员");
             }else if ("0".equals(user.getLockState())) {
                 // 已被锁定,1表示未被锁定
-                returnMsg.setCode("0");
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
                 returnMsg.setMsg("账号已被锁定,请联系管理员");
             }else if (!user.getAllowIps().contains(request.getRemoteAddr())) {
                 // ip被锁定,允许ips在数据库中存储
-                returnMsg.setCode("0");
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
                 returnMsg.setMsg("IP受限,请到有效地区");
             }else {
                 // 登录成功
-                returnMsg.setCode("1");
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_SUCCESS);
+                // 往会话域对象塞用户信息,以便于后面展示
+                session.setAttribute(Constant.SESSION_USER, user);
+                // 如果需要记住密码,应该响应对应的cookie
+                if (isRemPwd) {
+                    // 创建对应的Cookie对象
+                    Cookie loginActCookie = new Cookie(Constant.LOGIN_ACT, loginAct);
+                    Cookie loginPwdCookie = new Cookie(Constant.LOGIN_PWD, loginPwd);
+                    // 设置最大生命周期为10天,过期自动销毁
+                    loginActCookie.setMaxAge(864000);
+                    loginPwdCookie.setMaxAge(864000);
+                    // 不设置路径,路径默认是user及其一下
+                    // 响应Cookie
+                    response.addCookie(loginActCookie);
+                    response.addCookie(loginPwdCookie);
+                }else {
+                    // 为了安全,不论之前有没有对应的cookie信息,都应该干掉
+                    Cookie loginActCookie = new Cookie(Constant.LOGIN_ACT, Constant.DEFAULT_VALUE);
+                    Cookie loginPwdCookie = new Cookie(Constant.LOGIN_PWD, Constant.DEFAULT_VALUE);
+                    // 设置最大生命周期为0,干掉cookie
+                    loginActCookie.setMaxAge(0);
+                    loginPwdCookie.setMaxAge(0);
+                    // 响应cookie
+                    response.addCookie(loginActCookie);
+                    response.addCookie(loginPwdCookie);
+                }
             }
         }
         return returnMsg;

@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
         // criteria是单例的,所以要clear避免影响
         userExample.clear();
         // 3.:如果查询不到是空集合
-        // 获取对应的对象
+        // 获取对应的对象,不要直接获取,可能会越界异常
         return users.isEmpty() ? null : users.get(0);
     }
 }
