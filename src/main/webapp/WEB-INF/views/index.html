@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 </head>
 <body>
-	<script type="text/javascript">
-		document.location.href = "settings/qx/user/login.html";
-	</script>
+    <script type="text/javascript">
+        window.onload = function () {
+            window.location.href = "settings/qx/user/toLogin.do"
+        }
+    </script>
+    <base th:href="@{/}">
 </body>
 </html>

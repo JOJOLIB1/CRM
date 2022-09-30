@@ -33,11 +33,12 @@
                 <prop key="mapUnderscoreToCamelCase">true</prop>
             </props>
         </property>
-        <property name="typeAliasesPackage" value="com.jjj.pojo"/>
+        <property name="typeAliasesPackage" value="com.jjj.crm.settings.pojo"/>
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.jjj.mapper"/>
+        <property name="basePackage" value="com.jjj.crm.settings.mapper"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"/>
     </bean>
 
 </beans>

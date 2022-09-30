@@ -16,23 +16,23 @@
                         password="Hello_world_123!!~~~">
         </jdbcConnection>
         <!-- javaBean的生成策略-->
-        <javaModelGenerator targetPackage="com.jjj.mybatis.pojo1" targetProject=".\src\main\java">
+        <javaModelGenerator targetPackage="com.jjj.crm.settings.pojo" targetProject=".\src\main\java">
             <property name="enableSubPackages" value="true" />
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
         <!-- SQL映射文件的生成策略 -->
-        <sqlMapGenerator targetPackage="com.jjj.mybatis.mappers1" targetProject=".\src\main\resources">
+        <sqlMapGenerator targetPackage="com.jjj.crm.settings.mapper" targetProject=".\src\main\resources">
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
         <!-- Mapper接口的生成策略 -->
         <javaClientGenerator type="XMLMAPPER"
-                             targetPackage="com.jjj.mybatis.mappers1" targetProject=".\src\main\java">
+                             targetPackage="com.jjj.crm.settings.mapper" targetProject=".\src\main\java">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
         <!-- 逆向分析的表 -->
         <!-- tableName设置为*号，可以对应所有表，此时不写domainObjectName -->
         <!-- domainObjectName属性指定生成出来的实体类的类名 -->
-        <table tableName="t_emp" domainObjectName="Emp"/>
-        <table tableName="t_dept" domainObjectName="Dept"/>
+        <table tableName="tbl_user" domainObjectName="User"/>
+
     </context>
 </generatorConfiguration>
