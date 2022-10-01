@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class IndexController {
     /**
      *
-     * @return 视图名称,返回首页
+     * @return 返回首页的视图页面
      */
     @RequestMapping("/")
     public String toIndex() {

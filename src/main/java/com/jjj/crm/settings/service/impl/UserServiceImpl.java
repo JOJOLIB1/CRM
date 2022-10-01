@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     public User queryByLoginActAndPwd(String loginAct, String loginPwd) {
         // 1. 编辑查询条件
-        // where loginAct = ? and loginPwd = ?
+        // where login_act = ? and login_pwd = ?
         userExample.createCriteria().andLoginActEqualTo(loginAct).andLoginPwdEqualTo(loginPwd);
         // 2. 执行查询语句
         List<User> users = mapper.selectByExample(userExample);

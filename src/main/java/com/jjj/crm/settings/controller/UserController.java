@@ -33,24 +33,31 @@ public class UserController {
     ReturnMsg returnMsg;
 
     /**
-     *
-     * @return 视图名称,返回登录页面
+     * 登录页面
+     * @param loginAct cookie信息,存放用户名
+     * @param loginPwd cookie信息,存放密码
+     * @return 返回mv对象
      */
     @RequestMapping("/settings/qx/user/toLogin.do")
     public ModelAndView toLogin(@CookieValue(value = "loginAct", defaultValue = Constant.DEFAULT_VALUE) String loginAct, @CookieValue(value = "loginPwd", defaultValue = Constant.DEFAULT_VALUE) String loginPwd) {
         ModelAndView mv = new ModelAndView();
+        // 设置视图名称
         mv.setViewName("settings/qx/user/login");
+        // 往请求域放用户名和密码,为了记住密码功能
         mv.addObject(Constant.LOGIN_ACT, loginAct);
         mv.addObject(Constant.LOGIN_PWD, loginPwd);
         return mv;
     }
 
     /**
-     *
-     * @param loginAct 账号
+     * 登录
+     * @param loginAct 用户名
      * @param loginPwd 密码
-     * @param request 请求域
-     * @return object可以增强通用性
+     * @param isRemPwd 是否记住密码
+     * @param request 请求对象
+     * @param session 会话对象
+     * @param response 响应对象
+     * @return 返回一个json格式字符串,给ajax处理
      */
     @RequestMapping("/settings/qx/user/doLogin.do")
     @ResponseBody

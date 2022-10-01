@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class WorkbenchController {
 
+    /**
+     *
+     * @return 返回跳转到业务管理功能的视图页面
+     */
     @RequestMapping("/workbench/toIndex")
     public String toIndex() {
         return "workbench/index";
