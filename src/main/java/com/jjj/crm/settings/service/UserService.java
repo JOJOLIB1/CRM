@@ -2,6 +2,8 @@ package com.jjj.crm.settings.service;
 
 import com.jjj.crm.settings.pojo.User;
 
+import java.util.List;
+
 /**
  * @className: com.jjj.crm.settings.service.UserService
  * @description:
@@ -15,4 +17,9 @@ public interface UserService {
      */
     User queryByLoginActAndPwd(String loginAct, String loginPwd);
 
+    /**
+     * 查询所有的用户
+     * @return 返回所有用户的集合
+     */
+    List<User> queryAllUsers();
 }

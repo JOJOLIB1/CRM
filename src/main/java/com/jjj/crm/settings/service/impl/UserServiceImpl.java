@@ -34,4 +34,10 @@ public class UserServiceImpl implements UserService {
         // 获取对应的对象,不要直接获取,可能会越界异常
         return users.isEmpty() ? null : users.get(0);
     }
+
+    public List<User> queryAllUsers() {
+        // 查询所有的用户
+        return mapper.selectByExample(null);
+    }
+
 }

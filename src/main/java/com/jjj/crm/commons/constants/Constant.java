@@ -31,4 +31,9 @@ public class Constant {
      * DEFAULT_VALUE 一般的默认值
      */
     public static final String DEFAULT_VALUE = "";
+
+    /**
+     * REQUEST_ALL_USERS 请求域中存放所有用户的key
+     */
+    public static final String REQUEST_ALL_USERS = "reqUsers";
 }

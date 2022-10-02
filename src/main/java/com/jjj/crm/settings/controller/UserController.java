@@ -118,4 +118,27 @@ public class UserController {
         }
         return returnMsg;
     }
+
+    /**
+     * 安全登出
+     * @param session 会话域
+     * @return 登陆页面视图
+     */
+    @RequestMapping("/settings/qx/user/doLogout.do")
+    public String doLogout(HttpSession session, HttpServletResponse response) {
+        // 销毁session
+        session.invalidate();
+        // 销毁cookie
+        Cookie loginActCookie = new Cookie(Constant.LOGIN_ACT, null);
+        Cookie loginPwdCookie = new Cookie(Constant.LOGIN_PWD, null);
+        loginActCookie.setMaxAge(0);
+        loginPwdCookie.setMaxAge(0);
+        response.addCookie(loginActCookie);
+        response.addCookie(loginPwdCookie);
+        // 转发
+        return "settings/qx/user/login";
+    }
+
+
+
 }
