@@ -37,7 +37,7 @@
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.jjj.crm.settings.mapper"/>
+        <property name="basePackage" value="com.jjj.crm.settings.mapper,com.jjj.crm.workbench.mapper"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryBean"/>
     </bean>
 

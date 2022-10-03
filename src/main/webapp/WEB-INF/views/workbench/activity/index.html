@@ -9,15 +9,90 @@
 <script type="text/javascript" src="static/jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="static/jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="static/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="static/jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
-
 <script type="text/javascript">
 
+	(function($){
+		$.fn.datetimepicker.dates['zh-CN'] = {
+			days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+			daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+			daysMin:  ["日", "一", "二", "三", "四", "五", "六", "日"],
+			months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+			monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+			today: "今天",
+			suffix: [],
+			meridiem: ["上午", "下午"]
+		};
+	}(jQuery));
+
 	$(function(){
-		
-		
-		
-	});
+
+		$("#createActivityBtn").click(function () {
+			// 显示模态窗口
+			$("#createActivityModal").modal("show")
+		})
+		// 日期选择器
+		$("#create-startDate,#create-endDate").datetimepicker({
+			format : "yyyy-mm-dd",
+			initialDate : new Date(),
+			autoclose : true,
+			minView : "month",
+			language : "zh-CN",
+		})
+
+		$("#saveCreateActivityBtn").click(function () {
+			// 收集数据
+			let owner = $("#create-marketActivityOwner").val()
+			let name = $.trim($("#create-marketActivityName").val())
+			let startDate = $("#create-startDate").val()
+			let endDate = $("#create-endDate").val()
+			let cost = $.trim($("#create-cost").val())
+			let description = $.trim($("#create-description").val())
+			// 发送ajax请求
+			$.ajax({
+				url : "workbench/activity/createActivity",
+				type : "post",
+				dataType : "json",
+				data : {
+					"owner" : owner,
+					"name" : name,
+					"startDate" : startDate,
+					"endDate" : endDate,
+					"cost" : cost,
+					"description" : description
+				},
+				// 解析json,响应数据
+				success : function (data) {
+					if (data.code === "1") {
+						$("#createActivityModal").modal("hide")
+						$("#createForm").get(0).reset()
+						return
+					}
+					alert(data.msg)
+				},
+				// 数据验证
+				beforeSend : function () {
+					if (owner === "") {
+						alert("所有者必选")
+						return false
+					}
+					if (name === "") {
+						alert("名称必须要写")
+						return false
+					}
+					if (cost !== "" && !/(^[1-9]+\d*$)|(^0$)/.test(cost)) {
+						alert("价格必须是非负整数")
+						return false
+					}
+					if (startDate !== "" && endDate !== "") {
+						if (endDate < startDate)
+							alert("日期不合法")
+						return endDate > startDate
+					}
+					return true
+				}
+			})
+		})
+	})
 	
 </script>
 </head>
@@ -35,12 +110,13 @@
 				</div>
 				<div class="modal-body">
 				
-					<form class="form-horizontal" role="form">
+					<form id="createForm" class="form-horizontal" role="form">
 					
 						<div class="form-group">
 							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-marketActivityOwner">
+								  <option value="" selected></option>
 								  <option th:each="user:${reqUsers}" th:text="${user.getName()}" th:value="${user.getId()}"></option>
 								</select>
 							</div>
@@ -51,13 +127,13 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="create-startTime" class="col-sm-2 control-label">开始日期</label>
+							<label for="create-startDate" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-startTime">
+								<input type="text" class="form-control" id="create-startDate">
 							</div>
-							<label for="create-endTime" class="col-sm-2 control-label">结束日期</label>
+							<label for="create-endDate" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-endTime">
+								<input type="text" class="form-control" id="create-endDate">
 							</div>
 						</div>
                         <div class="form-group">
@@ -68,18 +144,17 @@
                             </div>
                         </div>
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">描述</label>
+							<label for="create-description" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="create-describe"></textarea>
+								<textarea class="form-control" rows="3" id="create-description"></textarea>
 							</div>
 						</div>
-						
 					</form>
 					
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="saveCreateActivityBtn">保存</button>
 				</div>
 			</div>
 		</div>
@@ -234,7 +309,7 @@
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createActivityModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-primary" id="createActivityBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>

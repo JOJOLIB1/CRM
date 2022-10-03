@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         userExample.createCriteria().andLoginActEqualTo(loginAct).andLoginPwdEqualTo(loginPwd);
         // 2. 执行查询语句
         List<User> users = mapper.selectByExample(userExample);
-        // criteria是单例的,所以要clear避免影响
+        // userExample,criteria是单例的,所以要clear避免影响
         userExample.clear();
         // 3.:如果查询不到是空集合
         // 获取对应的对象,不要直接获取,可能会越界异常

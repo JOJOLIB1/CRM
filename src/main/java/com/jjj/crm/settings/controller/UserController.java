@@ -135,8 +135,8 @@ public class UserController {
         loginPwdCookie.setMaxAge(0);
         response.addCookie(loginActCookie);
         response.addCookie(loginPwdCookie);
-        // 转发
-        return "settings/qx/user/login";
+        // 本质上需要重定向,转发功能和所达到的效果一致,转发比较方便,不存在刷新问题
+        return "index";
     }
 
 
