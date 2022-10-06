@@ -6,10 +6,19 @@
 <link href="static/jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <link href="static/jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
 
+<style type="text/css">
+	.pointer{
+		cursor: pointer;
+	}
+</style>
+
 <script type="text/javascript" src="static/jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="static/jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="static/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript">
+
+	let totalPageSize
+	let totalPageInfo
 
 	(function($){
 		$.fn.datetimepicker.dates['zh-CN'] = {
@@ -23,7 +32,7 @@
 			suffix: [],
 			meridiem: ["上午", "下午"]
 		};
-	}(jQuery));
+	}(jQuery))
 
 	$(function(){
 
@@ -69,6 +78,7 @@
 					if (data.code === "1") {
 						$("#createActivityModal").modal("hide")
 						$("#createForm").get(0).reset()
+						sendQuery(1, totalPageSize)
 						return
 					}
 					alert(data.msg)
@@ -96,8 +106,40 @@
 				}
 			})
 		})
-		// 发送请求
-		sendQuery(1, 10)
+		// 页面加载后
+		sendQuery(1, 5)
+		// 条件查询
+		$("#condition_search").click(function () {
+			sendQuery(1, totalPageSize)
+		})
+		// 给条件查询绑定回车事件
+		$(window).keydown(function (event) {
+			if (event.keyCode === 13) {
+				sendQuery(1, totalPageSize)
+			}
+		})
+
+		// 导航功能
+		$(document).on("click", ".pointer", function () {
+			alert(0)
+			let targetStr = ""
+			let innerText = this.innerText;
+			$('#activity_tbody span').each(function (){
+				alert(1)
+				if (innerText === "上一页") {
+					targetStr += totalPageInfo.prePage
+				}else if(innerText === "下一页") {
+					targetStr += totalPageInfo.nextPage
+				}else if (innerText === "首页") {
+					targetStr += "1"
+				}else if (innerText === "末页") {
+					targetStr += totalPageInfo.pages
+				}else {
+					targetStr += innerText
+				}
+			})
+			sendQuery(targetStr, totalPageSize)
+		})
 
 	})
 
@@ -108,7 +150,7 @@
 		let startDate = $("#condition_startDate").val()
 		let endDate = $("#condition_endtDate").val()
 		$.ajax({
-			url : "workbench/activity/query",
+			url : "workbench/activity/query" + "/" + pageNo,
 			type : "get",
 			dataType : "json",
 			data : {
@@ -116,14 +158,15 @@
 				name : name,
 				startDate : startDate,
 				endDate : endDate,
-				pageSize : pageSize,
-				pageNo : pageNo
+				pageSize : pageSize
 			},
 			success : function (pageInfo) {
+				// 更新最新的pageInfo
+				totalPageInfo = pageInfo
 				// 总记录数
 				$("#total").text(pageInfo.total)
 				// 每一页的记录数
-				pageSize = pageInfo.pageSize
+				totalPageSize = pageInfo.pageSize
 				let htmlStr = ""
 				// 动态拼接列表
 				$.each(pageInfo.list, function (index, obj) {
@@ -137,7 +180,28 @@
 				})
 				$("#activity_tbody").html(htmlStr)
 				// 动态拼接导航
-
+				let navigationStr = ""
+				if(pageInfo.hasPreviousPage) {
+					navigationStr += "<li><span class='pointer'>首页</span></li>"
+					navigationStr += "<li><span class='pointer'>上一页</span></li>"
+				}else {
+					navigationStr += "<li class='disabled'><span class='pointer'>首页</span></li>"
+					navigationStr += "<li class='disabled'><span class='pointer'>上一页</span></li>"
+				}
+				$.each(pageInfo.navigatepageNums, function (index, obj) {
+					if (obj === pageInfo.pageNum)
+						navigationStr+="<li class='active'><span class='pointer'>"+obj+"</span></li>"
+					else
+						navigationStr += "<li><span class='pointer'>"+obj+"</span></li>"
+				})
+				if(pageInfo.hasNextPage) {
+					navigationStr += "<li><span class='pointer'>下一页</span></li>"
+					navigationStr += "<li><span class='pointer'>末页</span></li>"
+				}else {
+					navigationStr += "<li class='disabled'><span class='pointer'>下一页</span></li>"
+					navigationStr += "<li class='disabled'><span class='pointer'>末页</span></li>"
+				}
+				$("#navigation_index").html(navigationStr)
 			}
 		})
 	}
@@ -321,8 +385,7 @@
 		<div style="width: 100%; position: absolute;top: 5px; left: 10px;">
 		
 			<div class="btn-toolbar" role="toolbar" style="height: 80px;">
-				<form class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
-				  
+				<div class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
@@ -351,9 +414,8 @@
 				    </div>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-default">查询</button>
-				  
-				</form>
+				  <button class="btn btn-default" id="condition_search">查询</button>
+				</div>
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
@@ -403,16 +465,7 @@
 				</div>
 				<div style="position: relative;top: -88px; left: 285px;">
 					<nav>
-						<ul class="pagination">
-							<li class="disabled"><a href="#">首页</a></li>
-							<li class="disabled"><a href="#">上一页</a></li>
-							<li class="active"><a href="#">1</a></li>
-							<li class="active"><a href="javascript:void(0)">2</a></li>
-							<li><a href="javascript:void(0)">3</a></li>
-							<li><a href="javascript:void(0)">4</a></li>
-							<li><a href="javascript:void(0)">5</a></li>
-							<li><a href="javascript:void(0)">下一页</a></li>
-							<li class="disabled"><a href="#">末页</a></li>
+						<ul class="pagination" id="navigation_index">
 						</ul>
 					</nav>
 				</div>

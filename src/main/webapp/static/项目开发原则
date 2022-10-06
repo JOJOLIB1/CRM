@@ -293,6 +293,10 @@ CRM项目开发目标
         14.在入口函数外封装函数
         15.js善于运用全局变量
         16.如果改变了每一页显示条数,我们必须返回第一页,因为当前页可能会因此而消失
+        17.需要用隐藏域接收id,id用于修改数据
+        18.
+            如果作为查询条件,且没有对应的实体类对象,一般封装成map集合
+            如果写数据,有对应的实体类对象,一般封装成对应的实体类对象
     新知识点:
         1.reset()方法可以重置form表单,是DOM对象的方法
         2.disabled不可以提交,readonly可以提交
@@ -310,20 +314,26 @@ CRM项目开发目标
             语法
                 父选择器.on(事件名, 子选择器, func) 该方式可以给动态元素加事件也可以给固有元素加事件
                 父元素:必须是固有元素,直接或间接都可以,越小越好,因为这样收到其他标签的干扰少
+        8.在多表查询中,mapUnderscoreToCamelcase失效
+        9 .在修改的时候,把对应的value值赋值给select,会自动找到对应的下拉框中的选项
     巩固:
-        th:each 修饰的标签会被循环
-        对同一个表进行了两次join,其逻辑连接上是不同的
-        $.each(数组,function(index, object){}) this 等于 object 简单用this,复杂用obj
-        选择器.append(html) 追加html 选择器.html(html) 覆盖html
-            这里不适合用append,因为连续点击导致数据重复
-        如果在jquery中触发事件后的回调函数里面的this表示对应的dom对象
-        .size() 获取jquery数组长度
+        1. th:each 修饰的标签会被循环
+        2. 对同一个表进行了两次join,其逻辑连接上是不同的
+        3. $.each(数组,function(index, object){}) this 等于 object 简单用this,复杂用obj
+        4. 选择器.append(html) 追加html 选择器.html(html) 覆盖html
+              这里不适合用append,因为连续点击导致数据重复
+        5. 如果在jquery中触发事件后的回调函数里面的this表示对应的dom对象
+        6. .size() 获取jquery数组长度
+        7. ajax请求的参数都在data里面,data可以是一个json对象也可以是一个字符串
+            1) data:{} 优势:简单 劣势:只能是普通文本,一个name对应一个value
+            2) data:name=value&name=value 优势:一个name对应多个value 劣势:复杂
+            3) data:fromData对象 优势:可以是普通文本也可以是文件 劣势:更复杂
 
 
     删除
 
 
-任务:查询市场 活动(多表+条件查询) 全选|取消全选
+任务:查询市场 活动(多表+条件查询) 全选|取消全选 删除市场活动 修改市场活动时序图 修改市场活动
 
 
 

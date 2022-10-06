@@ -387,10 +387,10 @@
                          LEFT JOIN tbl_user u3 ON ac.edit_by = u3.id
     <where>
         <if test="name != null and name != ''">
-          #{name} = ac.name
+          ac.name like '%${name}%'
         </if>
         <if test="owner != null and owner != ''">
-          and #{owner} = u1.name
+          and u1.name like '%${owner}%'
         </if>
         <if test="startDate != null and startDate != ''">
           and ac.start_date >= #{startDate}
