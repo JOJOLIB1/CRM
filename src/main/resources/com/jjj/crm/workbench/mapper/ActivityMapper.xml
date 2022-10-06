@@ -378,4 +378,28 @@
       edit_by = #{editBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+  <!-- make for myself-->
+  <select id="unionSelectByExample" resultType="activity">
+    SELECT ac.id, ac.name, ac.start_date startDate, ac.end_date endDate, ac.cost, ac.description, ac.create_time, ac.edit_time, u1.name AS owner, u2.name AS create_by, u3.name AS edit_by
+    FROM tbl_activity ac JOIN tbl_user u1 ON ac.owner = u1.id
+                         JOIN tbl_user u2 ON ac.create_by = u2.id
+                         LEFT JOIN tbl_user u3 ON ac.edit_by = u3.id
+    <where>
+        <if test="name != null and name != ''">
+          #{name} = ac.name
+        </if>
+        <if test="owner != null and owner != ''">
+          and #{owner} = u1.name
+        </if>
+        <if test="startDate != null and startDate != ''">
+          and ac.start_date >= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+          and #{endDate} >= ac.end_date
+        </if>
+    </where>
+    ORDER BY ac.create_time DESC
+  </select>
+
 </mapper>

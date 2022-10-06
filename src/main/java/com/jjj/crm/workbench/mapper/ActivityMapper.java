@@ -93,4 +93,12 @@ public interface ActivityMapper {
      * @mbggenerated Sun Oct 02 21:41:33 CST 2022
      */
     int updateByPrimaryKey(Activity record);
+
+    /**
+     * 多表条件查询
+     * @param condition 条件查询所需要的条件
+     * @return 返回根据条件查询所对应的全部结果
+     */
+    List<Activity> unionSelectByExample(Activity condition);
+
 }

@@ -86,4 +86,12 @@ public class ActivityController {
         return returnMsg;
     }
 
+    @GetMapping("/workbench/activity/query")
+    @ResponseBody
+    public Object query(Integer pageSize, Integer pageNo, Activity condition) {
+        return activityService.queryActivitiesForPages(pageSize, pageNo, condition);
+    }
+
+
+
 }

@@ -1,5 +1,6 @@
 package com.jjj.crm.workbench.service;
 
+import com.github.pagehelper.PageInfo;
 import com.jjj.crm.workbench.pojo.Activity;
 
 /**
@@ -15,4 +16,14 @@ public interface ActivityService {
      * @return 影响行数
      */
     int saveActivity(Activity activity);
+
+    /**
+     *
+     * @param pageSize 一页显示的条目数
+     * @param pageNo 当前页数
+     * @param condition 条件查询的条件
+     * @return pageInfo对象
+     */
+    PageInfo<Activity> queryActivitiesForPages(Integer pageSize, Integer pageNo, Activity condition);
+
 }
