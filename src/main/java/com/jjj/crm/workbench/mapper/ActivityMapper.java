@@ -101,4 +101,11 @@ public interface ActivityMapper {
      */
     List<Activity> unionSelectByExample(Activity condition);
 
+    /**
+     * 批量删除数据
+     * @param ids 待删除的id数组
+     * @return 影响行数
+     */
+    int batchDeleteByIds(String[] ids);
+
 }

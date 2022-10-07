@@ -402,4 +402,11 @@
     ORDER BY ac.create_time DESC
   </select>
 
+  <delete id="batchDeleteByIds">
+    DELETE FROM tbl_activity WHERE id in
+    <foreach collection="array" open="(" close=")" separator="," item="id">
+      #{id}
+    </foreach>
+  </delete>
+
 </mapper>

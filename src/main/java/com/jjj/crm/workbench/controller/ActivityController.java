@@ -83,12 +83,82 @@ public class ActivityController {
         return returnMsg;
     }
 
+    /**
+     * 分页查询
+     * @param pageSize 每一页的带线啊哦
+     * @param pageNo 页码号
+     * @param condition 条件
+     * @return pageInfo对象
+     */
     @GetMapping("/workbench/activity/query/{pageNo}")
     @ResponseBody
     public Object query(Integer pageSize, @PathVariable("pageNo") Integer pageNo, Activity condition) {
         return activityService.queryActivitiesForPages(pageSize, pageNo, condition);
     }
 
+    /**
+     * 批量删除
+     * @param ids 待删除的id
+     * @return returnMsg
+     */
+    @DeleteMapping("/workbench/activity/delete")
+    @ResponseBody
+    public Object delete(@RequestParam("id") String[] ids) {
+        int affectRows = activityService.deleteActivities(ids);
+        try {
+            if (affectRows < ids.length) {
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+                returnMsg.setMsg("系统繁忙,请稍后");
+            } else {
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_SUCCESS);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+            returnMsg.setMsg("系统繁忙,请稍后");
+            return returnMsg;
+        }
+        return returnMsg;
+    }
 
+    /**
+     * 给待更新的元素查询
+     * @param id 待更新的元素id
+     * @return 数据
+     */
+    @GetMapping("/workbench/activity/updateForSelect")
+    @ResponseBody
+    public Object updateForSelect(String id) {
+        return activityService.queryForUpdate(id);
+    }
 
+    /**
+     * 修改市场活动数据
+     * @param activity 修改内容
+     * @param session 会话域
+     * @return returnMsg
+     */
+    @PutMapping("/workbench/activity/update")
+    @ResponseBody
+    public Object update(Activity activity, HttpSession session) {
+        // 进一步封装
+        User user = (User) session.getAttribute(Constant.SESSION_USER);
+        activity.setEditBy(user.getId());
+        activity.setEditTime(DateUtils.formatDateTime());
+
+        int affectRows = activityService.updateActivity(activity);
+        try {
+            if (affectRows == 0) {
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+                returnMsg.setMsg("系统繁忙,请稍后");
+            }else {
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_SUCCESS);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+            returnMsg.setMsg("系统繁忙,请稍后");
+        }
+        return returnMsg;
+    }
 }

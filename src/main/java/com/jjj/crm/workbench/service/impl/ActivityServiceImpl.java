@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.jjj.crm.workbench.mapper.ActivityMapper;
 import com.jjj.crm.workbench.pojo.Activity;
+import com.jjj.crm.workbench.pojo.ActivityExample;
 import com.jjj.crm.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
  * @create: 2022-10-02 21:42
  */
 @Service
+@Transactional
 public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
@@ -37,4 +39,20 @@ public class ActivityServiceImpl implements ActivityService {
         // 封装pageInfo,导航分页是5,并返回
         return new PageInfo<Activity>(activities, 5);
     }
+
+    @Override
+    public int deleteActivities(String[] ids) {
+        return mapper.batchDeleteByIds(ids);
+    }
+
+    @Override
+    public Activity queryForUpdate(String id) {
+        return mapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public int updateActivity(Activity activity) {
+        return mapper.updateByPrimaryKeySelective(activity);
+    }
+
 }

@@ -26,4 +26,25 @@ public interface ActivityService {
      */
     PageInfo<Activity> queryActivitiesForPages(Integer pageSize, Integer pageNo, Activity condition);
 
+    /**
+     * 删除活动
+     * @param ids 待删除的id数组
+     * @return 影响行数
+     */
+    int deleteActivities(String[] ids);
+
+    /**
+     * 查询修改之前的市场活动
+     * @param id 市场活动的id
+     * @return 查询出来的数据
+     */
+    Activity queryForUpdate(String id);
+
+    /**
+     * 更新市场活动
+     * @param activity 修改的内容
+     * @return 影响行数
+     */
+    int updateActivity(Activity activity);
+
 }
