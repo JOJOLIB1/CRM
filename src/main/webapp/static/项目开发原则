@@ -297,6 +297,8 @@ CRM项目开发目标
         18.
             如果作为查询条件,且没有对应的实体类对象,一般封装成map集合
             如果写数据,有对应的实体类对象,一般封装成对应的实体类对象
+
+        19.
     新知识点:
         1.reset()方法可以重置form表单,是DOM对象的方法
         2.disabled不可以提交,readonly可以提交
@@ -315,7 +317,7 @@ CRM项目开发目标
                 父选择器.on(事件名, 子选择器, func) 该方式可以给动态元素加事件也可以给固有元素加事件
                 父元素:必须是固有元素,直接或间接都可以,越小越好,因为这样收到其他标签的干扰少
         8.在多表查询中,mapUnderscoreToCamelcase失效
-        9 .在修改的时候,把对应的value值赋值给select,会自动找到对应的下拉框中的选项
+        9.在修改的时候,把对应的value值赋值给select,会自动找到对应的下拉框中的选项
     巩固:
         1. th:each 修饰的标签会被循环
         2. 对同一个表进行了两次join,其逻辑连接上是不同的
@@ -329,11 +331,43 @@ CRM项目开发目标
             2) data:name=value&name=value 优势:一个name对应多个value 劣势:复杂
             3) data:fromData对象 优势:可以是普通文本也可以是文件 劣势:更复杂
 
+apache-poi插件
+    HSSFWorkbook------文件  wb = new HSSFWorkbook()创建excel文件对象
+    HSSFSheet---------页   sheet = wb.createSheet(name)重载方法可以生成默认名字的页面或者是指定名字的页面
+    HSSFRow-----------行   row = sheet.createRow(rowNum)在第rowNum行添加数据,0开始
+    HSSFCell----------列   cell = row.creatCell(cellNum)在第cellNum列添加数据,0开始
+    HSSFCellStyle-----样式  style = wb.createCellStyle()创建样式对象
+                                    row.setCellStyle(style) cell.setCellStyle(style) 使用样式
 
-    删除
+输出流对应的目录一定要存在,否则报错,文件可以不存在
+输出流要关,wb也要关
+文件下载只能发同步请求,因为如果发异步请求,是ajax发送的请求,ajax处理不了文件,所以只能发同步请求
+而且同步请求返回的文件也不会覆盖页
+响应信息如果浏览器打不开,就会调用应用程序打开,依旧打不开,就文件下载,可以设置响应头信息直接以附件形式下载
+遍历之前查看list集合是否为空且长度大于0,避免空指针异常和提高效率
+文件下载的异常捕获也没有用,因为文件下载以附件的形式存在,不会显示returnMsg
+注意要flush一下,否在可能会在缓冲区造成数据丢失
+
+wb.write() while((len = is.read(bytes)) != -1) os.write(bytes, 0, len) 效率非常低
+因为这两个操作都操作了磁盘,进行了IO操作
+
+文件上传的表单三大条件
+1.文件上传对应的组件必须是<input type='file'>
+2.必须发post请求
+    get:参数通过请求头发给后台,在uri后面拼接,只可以发文本数据,对长度有限制,效率较高
+    post:参数通过请求体发给后台,即可以发文本数据,也可以发二进制数据,对长度没有限制,效率较低[效率差别很小,忽略不计]
+3.表单的编码只能用multipart/form-data[阻止浏览器进行下面的操作]
+    根据HTTP协议,表单提交数据,浏览器会对数据进行统一的编码,默认的编码是urlencoded,,该编码修饰的是纯文本数据,如果遇到数值型数据
+    会将其转换为纯文本数据,文件上传的是二进制数据,如果转换为纯文本数据会报错
+
+multipartResolver:maxUploadSize最大上传大小,以byte为单位,超过就会抛异常
+                  defaultEncoding:默认编码
+transferTo(file) 文件可以不存在,目录必须要存在
+浏览器解析不了json
+new File(路径, 文件名)
 
 
-任务:修改市场活动时序图
+任务:导出市场活动时序图 批量导出与选择导出 导入市场互动时序图
 
 
 
