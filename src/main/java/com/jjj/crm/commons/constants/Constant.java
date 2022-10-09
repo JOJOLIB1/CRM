@@ -36,4 +36,6 @@ public class Constant {
      * REQUEST_ALL_USERS 请求域中存放所有用户的key
      */
     public static final String REQUEST_ALL_USERS = "reqUsers";
+
+    public static final String DEFAULT_FAILURE_MESSAGE = "系统繁忙,请稍后!";
 }

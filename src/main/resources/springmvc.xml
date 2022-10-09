@@ -28,6 +28,8 @@
 
     <bean id="simpleMappingExceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"/>
 
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
     <mvc:default-servlet-handler/>
 
     <mvc:annotation-driven/>

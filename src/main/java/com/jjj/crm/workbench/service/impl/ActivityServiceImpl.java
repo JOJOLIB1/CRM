@@ -55,4 +55,13 @@ public class ActivityServiceImpl implements ActivityService {
         return mapper.updateByPrimaryKeySelective(activity);
     }
 
+    @Override
+    public List<Activity> queryActivitiesByIds(String[] ids) {
+        return mapper.batchSelectByPrimaryKey(ids);
+    }
+
+    @Override
+    public int insertByList(List<Activity> activities) {
+        return mapper.batchInsertActivities(activities);
+    }
 }

@@ -3,6 +3,8 @@ package com.jjj.crm.workbench.service;
 import com.github.pagehelper.PageInfo;
 import com.jjj.crm.workbench.pojo.Activity;
 
+import java.util.List;
+
 /**
  * @className: com.jjj.crm.workbench.service.AcitvityService
  * @description:
@@ -47,4 +49,17 @@ public interface ActivityService {
      */
     int updateActivity(Activity activity);
 
+    /**
+     * 选择指定的市场互动
+     * @param ids
+     * @return
+     */
+    List<Activity> queryActivitiesByIds(String[] ids);
+
+    /**
+     * 批量插入数据
+     * @param activities
+     * @return
+     */
+    int insertByList(List<Activity> activities);
 }

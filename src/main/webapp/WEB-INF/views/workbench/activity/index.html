@@ -264,6 +264,57 @@
 			})
 
 		})
+
+		// 导出
+		$("#exportActivityAllBtn").click(function () {
+			window.location.href = "workbench/activity/exportExcel.do"
+		})
+		$("#exportActivityXzBtn").click(function () {
+			let finalUrl = ""
+			if ($("#activity_tbody input[type='checkbox']:checked").size() < 1) {
+				alert("至少选一个")
+				return
+			}
+			$("#activity_tbody input[type='checkbox']:checked").each(function () {
+				finalUrl += ("id=" + this.value + "&")
+			})
+			finalUrl = finalUrl.substring(0, finalUrl.length)
+			window.location.href = "workbench/activity/exportExcel.do?" + finalUrl
+		})
+
+		// 导入
+		$("#importActivityBtn").click(function () {
+			let suffix = $("#activityFile").val()
+			suffix = suffix.substr(suffix.length - 3).toLowerCase()
+			if ("xls" !== suffix) {
+				alert("必须是xls结尾的excel文件")
+				return
+			}
+			if ($("#activityFile").get(0).files[0].size > 5242880) {
+				alert("文件必须小于5M")
+				return
+			}
+			let fData = new FormData();
+			fData.append("excelFile", $("#activityFile").get(0).files[0])
+			$.ajax({
+				url : "workbench/activity/importExcel.do",
+				contentType : false,
+				processData : false,
+				data : fData,
+				dataType : "json",
+				type : "post",
+				success : function (data) {
+					if (data.code === "1") {
+						alert(data.msg)
+						$("#importActivityModal").modal("hide")
+						sendQuery(1, totalPageSize)
+						return
+					}
+					alert(data.msg)
+				}
+			})
+		})
+
 	})
 
 	sendQuery = function (pageNo, pageSize) {
@@ -551,7 +602,7 @@
 				  <button type="button" class="btn btn-danger" id="deleteActivity"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				<div class="btn-group" style="position: relative; top: 18%;">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>
+					<button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>
                     <button id="exportActivityAllBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（批量导出）</button>
                     <button id="exportActivityXzBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（选择导出）</button>
                 </div>

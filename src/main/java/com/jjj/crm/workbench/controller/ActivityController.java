@@ -3,17 +3,28 @@ package com.jjj.crm.workbench.controller;
 import com.jjj.crm.commons.constants.Constant;
 import com.jjj.crm.commons.pojo.ReturnMsg;
 import com.jjj.crm.commons.util.DateUtils;
+import com.jjj.crm.commons.util.PoiUtils;
 import com.jjj.crm.commons.util.UUIDUtils;
 import com.jjj.crm.settings.pojo.User;
 import com.jjj.crm.settings.service.UserService;
 import com.jjj.crm.workbench.pojo.Activity;
 import com.jjj.crm.workbench.service.ActivityService;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -70,14 +81,14 @@ public class ActivityController {
             int reflectRows = activityService.saveActivity(activity);
             if (reflectRows == 0) {
                 returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
-                returnMsg.setMsg("系统繁忙,请稍后!");
+                returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
             }else {
                 returnMsg.setCode(Constant.RETURN_MSG_CODE_SUCCESS);
             }
         }catch (Exception e) {
             e.printStackTrace();
             returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
-            returnMsg.setMsg("系统繁忙,请稍后!");
+            returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
             return returnMsg;
         }
         return returnMsg;
@@ -85,7 +96,7 @@ public class ActivityController {
 
     /**
      * 分页查询
-     * @param pageSize 每一页的带线啊哦
+     * @param pageSize 每一页的记录数
      * @param pageNo 页码号
      * @param condition 条件
      * @return pageInfo对象
@@ -108,14 +119,14 @@ public class ActivityController {
         try {
             if (affectRows < ids.length) {
                 returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
-                returnMsg.setMsg("系统繁忙,请稍后");
+                returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
             } else {
                 returnMsg.setCode(Constant.RETURN_MSG_CODE_SUCCESS);
             }
         } catch (Exception e) {
             e.printStackTrace();
             returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
-            returnMsg.setMsg("系统繁忙,请稍后");
+            returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
             return returnMsg;
         }
         return returnMsg;
@@ -150,15 +161,71 @@ public class ActivityController {
         try {
             if (affectRows == 0) {
                 returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
-                returnMsg.setMsg("系统繁忙,请稍后");
+                returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
             }else {
                 returnMsg.setCode(Constant.RETURN_MSG_CODE_SUCCESS);
             }
         }catch (Exception e) {
             e.printStackTrace();
             returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
-            returnMsg.setMsg("系统繁忙,请稍后");
+            returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
         }
         return returnMsg;
     }
+
+    /**
+     * 批量导出数据与选择性导出数据
+     * @return 响应体
+     * @throws IOException io异常
+     */
+    @ResponseBody
+    @RequestMapping("/workbench/activity/exportExcel.do")
+    public ResponseEntity<byte[]> exportExcel(@RequestParam(value = "id", required = false) String[] ids) throws IOException {
+        // 状态行信息
+        HttpStatus status = HttpStatus.OK;
+        // 响应头信息
+        MultiValueMap<String, String> header = new HttpHeaders();
+        header.add("Content-Disposition", "attachment;filename=activities.xls");
+        // 响应体信息
+        // 调用业务层
+        List<Activity> activities = activityService.queryActivitiesByIds(ids);
+        HSSFWorkbook workbook = PoiUtils.getHSSFWorkbook();
+        PoiUtils.createActivityHeader(workbook);
+        PoiUtils.createActivityDynamicData(activities, workbook);
+        // 字节数组输出流,相当于中间层
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        // 先将对象输出中间层,然后再转换为byte[]
+        workbook.write(outputStream);
+        // 封装响应体
+        return new ResponseEntity<byte[]>(outputStream.toByteArray(), header, status);
+    }
+
+    /**
+     * 导入excel文件
+     * @param excelFile
+     * @param session
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/workbench/activity/importExcel.do")
+    public Object importExcel(MultipartFile excelFile, HttpSession session){
+        InputStream is = null;
+        try {
+            is = excelFile.getInputStream();
+            HSSFWorkbook workbook = PoiUtils.getHSSFWorkbook(is);
+            User user = (User) session.getAttribute(Constant.SESSION_USER);
+            // 获取list集合
+            List<Activity> list = PoiUtils.getListFromExcel(workbook, user.getId());
+            int affectRows = activityService.insertByList(list);
+            returnMsg.setCode(Constant.RETURN_MSG_CODE_SUCCESS);
+            returnMsg.setMsg("成功插入" + affectRows + "行");
+        } catch (IOException e) {
+            e.printStackTrace();
+            returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+            returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
+            return returnMsg;
+        }
+        return returnMsg;
+    }
+
 }
