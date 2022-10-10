@@ -395,14 +395,17 @@ join on 本质上也是过滤条件
 ajax参数
 processData:默认是true,表示将所有的参数自动变为纯文本参数,对于文件来说肯定是不行的,所以改为false
 contentType:默认是true,表示将所哟的参数自动编码为urlencoded,所以改为false
-任务:导出市场活动时序图 导入市场活动时序图
-
-
 新知识:
     byteArrayOutputStream
+    thymeleaf自定义属性
+        th:attr="data-属性名=XXX, data-属性名=XXX"
 
+鼠标悬停图片上,对应的title属性值会显示
+我们可以利用标签中的属性来存储我们所需要的数据
+如果是表单组件的时候,优先使用value属性[方便],如果value被占用,则采用自定义属性(可以给标签随意加属性)
+如果不是表单组件,不推荐使用value属性[浏览器可能报错],推荐使用自定义属性
+自定义属性只可以通过:jquery对象.attr("属性名")获取
+一般是一个资源目录一个controller,如果对应的controller太长,可以再弄一个controller,便于维护
+当js代码被执行的时候,thymeleaf早就解析好了
 
-
-
-
-
+任务:导出市场活动时序图 详情[由...创建|修改]页面 图片功能(有时间) 添加备注

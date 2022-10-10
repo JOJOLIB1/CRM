@@ -62,4 +62,10 @@ public interface ActivityService {
      * @return
      */
     int insertByList(List<Activity> activities);
+
+    /**
+     * 查询市场活动的详细信息
+     * @param id 市场活动的id
+     */
+    Activity queryDetailOfActivity(String id);
 }

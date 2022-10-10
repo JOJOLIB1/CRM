@@ -228,4 +228,12 @@ public class ActivityController {
         return returnMsg;
     }
 
+
+    
+    public ModelAndView toDetail(String id) {
+
+    }
+
+
+
 }

@@ -64,4 +64,9 @@ public class ActivityServiceImpl implements ActivityService {
     public int insertByList(List<Activity> activities) {
         return mapper.batchInsertActivities(activities);
     }
+
+    @Override
+    public Activity queryDetailOfActivity(String id) {
+        return mapper.selectForDetail(id);
+    }
 }

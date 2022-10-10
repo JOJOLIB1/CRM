@@ -429,6 +429,14 @@
       (#{atv.id}, #{atv.owner}, #{atv.name}, #{atv.startDate}, #{atv.endDate}, #{atv.cost}, #{atv.description}, #{atv.createTime}, #{atv.createBy} )
     </foreach>
   </insert>
+
+  <select id="selectForDetail" resultType="activity">
+    SELECT ac.id, ac.name, ac.start_date startDate, ac.end_date endDate, ac.cost, ac.description, ac.create_time, ac.edit_time, u1.name AS owner, u2.name AS create_by, u3.name AS edit_by
+    FROM tbl_activity ac JOIN tbl_user u1 ON ac.owner = u1.id
+                         JOIN tbl_user u2 ON ac.create_by = u2.id
+                         LEFT JOIN tbl_user u3 ON ac.edit_by = u3.id
+    WHERE ac.id = #{id}
+  </select>
   
 
 </mapper>
