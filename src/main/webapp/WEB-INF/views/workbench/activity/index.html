@@ -346,7 +346,7 @@
 				$.each(pageInfo.list, function (index, obj) {
 					htmlStr += 	"<tr className=\"active\">" +
 								"<td><input type=\"checkbox\" value='"+obj.id+"'/></td>" +
-								"<td><a style=\"text-decoration: none; cursor: pointer;\" onClick=\"window.location.href='detail.html';\">"+obj.name+"</a></td>" +
+								"<td><a style=\"text-decoration: none; cursor: pointer;\" onClick=\"window.location.href='workbench/activity/toDetail?id="+obj.id+"';\">"+obj.name+"</a></td>" +
 								"<td>"+obj.owner+"</td>" +
 								"<td>"+obj.startDate+"</td>" +
 								"<td>"+obj.endDate+"</td>" +

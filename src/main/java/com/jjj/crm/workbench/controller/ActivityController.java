@@ -8,6 +8,8 @@ import com.jjj.crm.commons.util.UUIDUtils;
 import com.jjj.crm.settings.pojo.User;
 import com.jjj.crm.settings.service.UserService;
 import com.jjj.crm.workbench.pojo.Activity;
+import com.jjj.crm.workbench.pojo.ActivityRemark;
+import com.jjj.crm.workbench.service.ActivityRemarkService;
 import com.jjj.crm.workbench.service.ActivityService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,9 @@ public class ActivityController {
     ReturnMsg returnMsg;
     @Autowired
     ActivityService activityService;
+
+    @Autowired
+    ActivityRemarkService activityRemarkService;
 
     /**
      * @return 市场活动视图转发
@@ -228,12 +233,77 @@ public class ActivityController {
         return returnMsg;
     }
 
-
-    
+    /**
+     * 详情页面
+     * @param id 市场活动id
+     * @return
+     */
+    @RequestMapping("/workbench/activity/toDetail")
     public ModelAndView toDetail(String id) {
-
+        // 查询市场活动相关的数据
+        Activity activity = activityService.queryDetailOfActivity(id);
+        // 查询该市场活动的留言信息
+        List<ActivityRemark> activityRemarks = activityRemarkService.queryRemarkFromActivity(id);
+        // 塞到域对象里面
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("workbench/activity/detail");
+        mv.addObject(Constant.REQUEST_ACTIVITY, activity);
+        mv.addObject(Constant.REQUEST_ACTIVITY_REMARK, activityRemarks);
+        return mv;
     }
 
+    /**
+     * 添加留言
+     * @param remark 留言实体类对象
+     * @param session 会话域
+     * @return json
+     */
+    @PostMapping("/workbench/activity/addActivityRemark")
+    @ResponseBody
+    public Object addActivityRemark(HttpSession session, ActivityRemark remark) {
+        User user = (User) session.getAttribute(Constant.SESSION_USER);
+        // 进一步封装
+        remark.setCreateTime(DateUtils.formatDateTime());
+        remark.setEditFlag(Constant.DEFAULT_EDIT_FLAG);
+        remark.setCreateBy(user.getId());
+        remark.setId(UUIDUtils.getUUID());
+        try {
+            int affectRows = activityRemarkService.addRemarkForActivity(remark);
+            if (affectRows == 0) {
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+                returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
+            }else {
+                returnMsg.setMsg(Constant.RETURN_MSG_CODE_SUCCESS);
+                // 成功了把名字重新封装
+                remark.setCreateBy(user.getName());
+                returnMsg.setOthMsg(remark);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+            returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
+            return returnMsg;
+        }
+        return returnMsg;
+    }
 
-
+    @DeleteMapping("/workbench/activity/deleteActivityRemark")
+    @ResponseBody
+    public Object deleteActivityRemark(String id) {
+        try {
+            int affectRows = activityRemarkService.deleteRemarkById(id);
+            if (affectRows == 0) {
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+                returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
+            }else {
+                returnMsg.setMsg(Constant.RETURN_MSG_CODE_SUCCESS);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+            returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
+            return returnMsg;
+        }
+        return returnMsg;
+    }
 }

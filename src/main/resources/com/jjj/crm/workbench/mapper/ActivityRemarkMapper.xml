@@ -332,10 +332,11 @@
   </update>
 
   <select id="selectRemarkByActivityId" resultType="ActivityRemark">
-    SELECT ar.id, ar.note_content, ar.create_time, ar.edit_time, edit_flag, ur1.name AS create_by, ur2.name AS edit_by
+    SELECT ar.id, ar.note_content noteContent, ar.create_time createTime, ar.edit_time AS editTime, edit_flag AS editFlag, ur1.name AS createBy, ur2.name AS editBy
     FROM tbl_activity_remark ar JOIN tbl_user ur1 ON ar.create_by = ur1.id
                                 LEFT JOIN tbl_user ur2 ON ar.edit_by = ur2.id
     WHERE ar.activity_id = #{id}
+    ORDER BY ar.create_time ASC
   </select>
 
 </mapper>
