@@ -56,4 +56,16 @@ public class Constant {
      * DEFAULT_EDIT_FLAG 修改备注的默认情况
      */
     public static final String DEFAULT_EDIT_FLAG = "0";
+
+    /**
+     * CHANGED_EDIT_FLAG 修改备注后的情况
+     */
+    public static final String CHANGED_EDIT_FLAG = "1";
+
+    /**
+     * DIC_CLUE_CREATE_LIST 线索主页面所需要的数据字典类型
+     */
+    public static final String[] DIC_CLUE_CREATE_LIST = new String[] {"appellation", "clueState", "source"};
+
+
 }

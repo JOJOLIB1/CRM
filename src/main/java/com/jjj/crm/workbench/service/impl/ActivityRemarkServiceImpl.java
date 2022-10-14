@@ -33,4 +33,9 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
     public int deleteRemarkById(String id) {
         return mapper.deleteByPrimaryKey(id);
     }
+
+    @Override
+    public int updateRemark(ActivityRemark remark) {
+        return mapper.updateByPrimaryKeySelective(remark);
+    }
 }

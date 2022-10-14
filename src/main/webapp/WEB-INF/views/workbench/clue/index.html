@@ -1,22 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<base th:href="@{/}">
+<link href="static/jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<link href="static/jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
 
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
-
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="static/jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="static/jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="static/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="static/jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script type="text/javascript">
 
 	$(function(){
-		
-		
-		
+		$("#saveBtn").click(function () {
+			// 每次都清空表单初始化
+			$("#saveForm").get(0).reset()
+			$("#createClueModal").modal("show")
+		})
+		$("#saveCreateInfoBtn").click(function () {
+			// 获取数据
+			let owner = $("#create-clueOwner").val()
+			let company = $("#create-company").val()
+			let appellation = $("#create-call").val()
+			let fullname = $("#create-surname").val()
+			let job = $("#create-job").val()
+			let email = $("#create-email").val()
+			let phone = $("#create-phone").val()
+			let website = $("#create-website").val()
+			let mphone = $("#create-mphone").val()
+			let state = $("#create-status").val()
+			let source = $("#create-source").val()
+			let description = $("#create-describe").val()
+			let contactSummary = $("#create-contactSummary").val()
+			let nextContactTime = $("#create-nextContactTime").val()
+			let address = $("#create-address").val()
+			// 验证参数
+			// 发送请求
+			$.ajax({
+				url : "workbench/clue/saveClue.do",
+				type : "post",
+				dataType : "json",
+				data : {
+					owner : owner,
+					company : company,
+					appellation : appellation,
+					fullname : fullname,
+					job : job,
+					email : email,
+					phone : phone,
+					website : website,
+					mphone : mphone,
+					state : state,
+					source : source,
+					description : description,
+					contactSummary : contactSummary,
+					nextContactTime : nextContactTime,
+					address : address
+				},
+				success : function (data) {
+					if (data.code === "1") {
+						$("#createClueModal").modal("hide")
+						// 部分刷新
+
+					}else {
+						alert(data.msg)
+					}
+				}
+			})
+		})
+
 	});
 	
 </script>
@@ -34,15 +88,14 @@
 					<h4 class="modal-title" id="myModalLabel">创建线索</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal" role="form">
+					<form id="saveForm" class="form-horizontal" role="form">
 					
 						<div class="form-group">
 							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+									<option value=""></option>
+									<option th:each="user : ${reqUsers}" th:value="${user.id}" th:text="${user.name}"></option>
 								</select>
 							</div>
 							<label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -55,12 +108,8 @@
 							<label for="create-call" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-call">
-								  <option></option>
-								  <option>先生</option>
-								  <option>夫人</option>
-								  <option>女士</option>
-								  <option>博士</option>
-								  <option>教授</option>
+								  	<option value=""></option>
+									<option th:each="dic : ${appellation}" th:value="${dic.id}" th:text="${dic.value}"></option>
 								</select>
 							</div>
 							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -99,14 +148,8 @@
 							<label for="create-status" class="col-sm-2 control-label">线索状态</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-status">
-								  <option></option>
-								  <option>试图联系</option>
-								  <option>将来联系</option>
-								  <option>已联系</option>
-								  <option>虚假线索</option>
-								  <option>丢失线索</option>
-								  <option>未联系</option>
-								  <option>需要条件</option>
+									<option value=""></option>
+									<option th:each="dic : ${clueState}" th:value="${dic.id}" th:text="${dic.value}"></option>
 								</select>
 							</div>
 						</div>
@@ -115,21 +158,8 @@
 							<label for="create-source" class="col-sm-2 control-label">线索来源</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-source">
-								  <option></option>
-								  <option>广告</option>
-								  <option>推销电话</option>
-								  <option>员工介绍</option>
-								  <option>外部介绍</option>
-								  <option>在线商场</option>
-								  <option>合作伙伴</option>
-								  <option>公开媒介</option>
-								  <option>销售邮件</option>
-								  <option>合作伙伴研讨会</option>
-								  <option>内部研讨会</option>
-								  <option>交易会</option>
-								  <option>web下载</option>
-								  <option>web调研</option>
-								  <option>聊天</option>
+								  	<option value=""></option>
+									<option th:each="dic : ${source}" th:value="${dic.id}" th:text="${dic.value}"></option>
 								</select>
 							</div>
 						</div>
@@ -174,7 +204,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="saveCreateInfoBtn">保存</button>
 				</div>
 			</div>
 		</div>
@@ -438,7 +468,7 @@
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClueModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-primary" id="saveBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>

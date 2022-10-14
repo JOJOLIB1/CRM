@@ -84,8 +84,7 @@
 					}
 				}
 			})
-
-			$("#")
+			// 回车添加
 
 		})
 
@@ -111,6 +110,51 @@
 		})
 
 
+		let remarkId;
+		// 修改功能-1
+		$("#remark_base").on("click", "a[name='editA']", function () {
+			// 收集数据
+			let id = $(this).attr("data-remarkId")
+			remarkId = id
+			let noteContent = $("#div_" + id + " h5").text()
+			// 填写数据
+			$("#noteContent").text(noteContent)
+			// 弹出模态窗口
+			$("#editRemarkModal").modal("show")
+		})
+		// 修改功能-2
+		$("#updateRemarkBtn").click(function () {
+			// 验证数据
+			let noteContent = $("#noteContent").val()
+			if (noteContent === "") {
+				alert("信息不能为空")
+				return
+			}
+			// 发送请求
+			$.ajax({
+				url : "workbench/activity/updateActivityRemark",
+				type : "post",
+				data : {
+					"_method" : "put",
+					id : remarkId,
+					noteContent : noteContent
+				},
+				dataType : "json",
+				success : function (data) {
+					if (data.code === "1") {
+						// 关闭模态窗口
+						$("#editRemarkModal").modal("hide")
+						// 干掉数据
+						$("#noteContent").val("")
+						// 部分刷新
+						$("#div_" + remarkId + " h5").text(data.othMsg.noteContent)
+						$("#div_" + remarkId + " small").text(data.othMsg.editTime + "由" + data.othMsg.editBy + "修改")
+					}else {
+						alert(data.msg)
+					}
+				}
+			})
+		})
 	});
 	
 </script>

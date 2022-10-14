@@ -287,6 +287,11 @@ public class ActivityController {
         return returnMsg;
     }
 
+    /**
+     * 删除留言信息
+     * @param id 留言id
+     * @return json
+     */
     @DeleteMapping("/workbench/activity/deleteActivityRemark")
     @ResponseBody
     public Object deleteActivityRemark(String id) {
@@ -299,6 +304,40 @@ public class ActivityController {
                 returnMsg.setMsg(Constant.RETURN_MSG_CODE_SUCCESS);
             }
         }catch (Exception e) {
+            e.printStackTrace();
+            returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+            returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
+            return returnMsg;
+        }
+        return returnMsg;
+    }
+
+    /**
+     * 修改json
+     * @param remark 最新的数据
+     * @return json
+     */
+    @PutMapping("/workbench/activity/updateActivityRemark")
+    @ResponseBody
+    public Object updateActivityRemark(ActivityRemark remark, HttpSession session) {
+        // 进一步封装
+        User user = (User) session.getAttribute(Constant.SESSION_USER);
+        remark.setEditFlag(Constant.CHANGED_EDIT_FLAG);
+        remark.setEditBy(user.getId());
+        remark.setEditTime(DateUtils.formatDateTime());
+        // 调用业务层
+        try {
+            int affectRows = activityRemarkService.updateRemark(remark);
+            if (affectRows == 0) {
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+                returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
+            }else {
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_SUCCESS);
+                // 重新封装修改者名字,方便前端
+                remark.setEditBy(user.getName());
+                returnMsg.setOthMsg(remark);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
             returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
