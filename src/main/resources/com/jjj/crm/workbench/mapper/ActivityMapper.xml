@@ -437,6 +437,22 @@
                          LEFT JOIN tbl_user u3 ON ac.edit_by = u3.id
     WHERE ac.id = #{id}
   </select>
-  
+
+  <select id="selectActivityByClueId" resultMap="BaseResultMap">
+    SELECT ac.name, ac.start_date, ac.end_date, us.name AS owner, ac.id
+    FROM tbl_activity ac JOIN tbl_user us ON ac.owner = us.id
+                         JOIN tbl_clue_activity_relation car ON car.activity_id = ac.id
+    WHERE #{clueId} = car.clue_id
+  </select>
+
+  <select id="selectUnboundedActivityByName" resultMap="BaseResultMap">
+    SELECT ac.id, ac.start_date, ac.end_date, us.name AS owner, ac.name
+    FROM tbl_activity ac JOIN tbl_user us ON ac.owner = us.id
+    WHERE ac.name like '%${name}%' AND ac.id NOT IN (
+        SELECT car.activity_id
+        FROM tbl_clue_activity_relation car
+        WHERE car.clue_id = #{clueId}
+      )
+  </select>
 
 </mapper>

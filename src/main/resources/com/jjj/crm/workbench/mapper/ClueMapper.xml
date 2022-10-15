@@ -520,4 +520,17 @@
       address = #{address,jdbcType=VARCHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+  
+  <!-- making for myself-->
+  <select id="queryClueById" resultMap="BaseResultMap">
+    SELECT cu.id, cu.fullname, dv.value AS appellation, us.name AS owner, cu.company, cu.job, cu.email, cu.phone, cu.website, cu.mphone, dv1.value AS state, dv2.value AS source, us1.name AS create_by, cu.create_time, us2.name AS edit_by, cu.edit_time, cu.description,
+           cu.contact_summary, cu.next_contact_time, cu.address
+    FROM tbl_clue cu LEFT JOIN tbl_dic_value dv ON cu.appellation = dv.id
+                          JOIN tbl_user us ON cu.owner = us.id
+                     LEFT JOIN tbl_dic_value dv1 ON cu.state = dv1.id
+                     LEFT JOIN tbl_dic_value dv2 ON cu.source = dv2.id
+                          JOIN tbl_user us1 ON cu.create_by = us1.id
+                     LEFT JOIN tbl_user us2 ON cu.edit_by = us2.id
+    WHERE cu.id = #{id}
+  </select>
 </mapper>

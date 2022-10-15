@@ -15,4 +15,11 @@ public interface ClueService {
      * @return 影响行数
      */
     int saveCreateClue(Clue clue);
+
+    /**
+     * 根据id查找线索
+     * @param id clueId
+     * @return
+     */
+    Clue queryClueById(String id);
 }

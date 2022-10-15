@@ -68,4 +68,19 @@ public interface ActivityService {
      * @param id 市场活动的id
      */
     Activity queryDetailOfActivity(String id);
+
+    /**
+     * 根据clueId查询关联的市场活动
+     * @param clueId
+     * @return
+     */
+    List<Activity> queryActivityByClueId(String clueId);
+
+    /**
+     * 根据name模糊查询未被关联的市场活动
+     * @param clueId 线索id
+     * @param name 模糊查询条件
+     * @return
+     */
+    List<Activity> queryUnboundedActivityByName(String clueId,String name);
 }

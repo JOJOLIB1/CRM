@@ -93,4 +93,11 @@ public interface ClueMapper {
      * @mbggenerated Fri Oct 14 21:40:07 CST 2022
      */
     int updateByPrimaryKey(Clue record);
+
+    /**
+     * 根据clueId,进行多表查询
+     * @param id clueId 线索id
+     * @return 目标线索
+     */
+    Clue queryClueById(String id);
 }

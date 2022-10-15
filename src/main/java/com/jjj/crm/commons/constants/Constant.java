@@ -67,5 +67,14 @@ public class Constant {
      */
     public static final String[] DIC_CLUE_CREATE_LIST = new String[] {"appellation", "clueState", "source"};
 
+    /**
+     * REQUEST_CLUE 请求域中的clue线索信息
+     */
+    public static final String REQUEST_CLUE = "clue";
+
+    /**
+     * REQUEST_CLUE_REMARK 请求域中的线索备注信息
+     */
+    public static final String REQUEST_CLUE_REMARK = "clueRemarks";
 
 }
