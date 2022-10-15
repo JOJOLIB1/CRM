@@ -18,10 +18,7 @@ import com.jjj.crm.workbench.service.ClueService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -123,13 +120,13 @@ public class ClueController {
     /**
      * 查询未被联系的市场活动
      * @param name 模糊查询参数
-     * @param id clueId
+     * @param clueId clueId
      * @return
      */
     @RequestMapping("/workbench/clue/queryUnboundedActivities.do")
     @ResponseBody
-    public Object queryUnboundedActivities(String name, String id) {
-        return activityService.queryUnboundedActivityByName(id, name);
+    public Object queryUnboundedActivities(String name, String clueId) {
+        return activityService.queryUnboundedActivityByName(clueId, name);
     }
 
     /**
@@ -164,6 +161,30 @@ public class ClueController {
             e.printStackTrace();
             returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
             returnMsg.setOthMsg(Constant.DEFAULT_FAILURE_MESSAGE);
+            return returnMsg;
+        }
+        return returnMsg;
+    }
+
+    /**
+     * 删除联系
+     * @param clueActivityRelation 待删除的条件封装的对象
+     * @return
+     */
+    @DeleteMapping("/workbench/clue/deleteRelation.do")
+    @ResponseBody
+    public Object deleteRelation(ClueActivityRelation clueActivityRelation) {
+        try {
+            int affectRows = clueActivityRelationService.deleteClueActivityRelation(clueActivityRelation);
+            if (affectRows == 0) {
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+                returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
+            }else {
+                returnMsg.setCode(Constant.RETURN_MSG_CODE_SUCCESS);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+            returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
             return returnMsg;
         }
         return returnMsg;

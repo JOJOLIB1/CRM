@@ -18,4 +18,10 @@ public interface ClueActivityRelationService {
      * @return 印象行数
      */
     int saveCreateCLueActivityRelation(List<ClueActivityRelation> clueActivityRelation);
+
+    /**
+     * 删除市场活动和线索的关系
+     * @param clueActivityRelation 待删除的条件
+     */
+    int deleteClueActivityRelation(ClueActivityRelation clueActivityRelation);
 }

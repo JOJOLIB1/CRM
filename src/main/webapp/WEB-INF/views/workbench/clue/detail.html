@@ -98,12 +98,13 @@
 						let htmlStr = ""
 						// 封装显示信息
 						$.each(data.othMsg, function () {
-							htmlStr += "<tr id='tr_'"+this.id+">"
+							htmlStr += "<tr id='tr_"+this.id+"'>"
 							htmlStr += "<td>"+this.name+"</td>"
 							htmlStr += "<td>"+this.startDate+"</td>"
 							htmlStr += "<td>"+this.endDate+"</td>"
 							htmlStr += "<td>"+this.owner+"</td>"
-							htmlStr += "<td><a href=\"javascript:void(0);\" data-activityId='"+this.id+"' style=\"text-decoration: none;\"><span className=\"glyphicon glyphicon-remove\"></span>解除关联</a></td>"
+							htmlStr += "<td><a href=\"javascript:void(0);\" style=\"text-decoration: none;\" data-activityId='"+this.id+"'><span class=\"glyphicon glyphicon-remove\"></span>解除关联</a></td>"
+
 						})
 						$("#showActivity").append(htmlStr)
 						// 清空
@@ -116,7 +117,30 @@
 			})
 
 		})
-
+		// 删除联系
+		$("#showActivity").on("click", "a", function () {
+			// 收集参数
+			let clueId = $("#clueId").val()
+			let activityId = $(this).attr("data-activityId")
+			// 发送请求
+			$.ajax({
+				url : "workbench/clue/deleteRelation.do",
+				type : "post",
+				dataType : "json",
+				data : {
+					clueId : clueId,
+					activityId : activityId,
+					"_method" : "delete"
+				},
+				success : function (data) {
+					if (data.code === "0") {
+						alert(data.msg)
+					}else {
+						$("#tr_" + activityId).remove()
+					}
+				}
+			})
+		})
 	});
 	
 </script>
@@ -346,12 +370,12 @@
 						</tr>
 					</thead>
 					<tbody id="showActivity">
-						<tr th:each="atv : ${activity}">
+						<tr th:each="atv : ${activity}" th:id="'tr_'+${atv.id}">
 							<td th:text="${atv.name}"></td>
 							<td th:text="${atv.startDate}"></td>
 							<td th:text="${atv.endDate}"></td>
 							<td th:text="${atv.owner}"></td>
-							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
+							<td><a href="javascript:void(0);" th:attr="data-activityId=${atv.id}" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
 						</tr>
 <!--						<tr>
 							<td>发传单</td>
