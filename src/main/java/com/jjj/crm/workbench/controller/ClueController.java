@@ -4,6 +4,7 @@ import com.jjj.crm.commons.constants.Constant;
 import com.jjj.crm.commons.pojo.ReturnMsg;
 import com.jjj.crm.commons.util.DateUtils;
 import com.jjj.crm.commons.util.UUIDUtils;
+import com.jjj.crm.settings.pojo.DicValue;
 import com.jjj.crm.settings.pojo.User;
 import com.jjj.crm.settings.service.DicValueService;
 import com.jjj.crm.settings.service.UserService;
@@ -190,5 +191,32 @@ public class ClueController {
         return returnMsg;
     }
 
+    /**
+     * 跳转转换页面
+     * @param id 线索id
+     * @return modelAndView
+     */
+    @RequestMapping("/workbench/clue/toConvert.do")
+    public ModelAndView toConvert(String id) {
+        Clue clue = clueService.queryClueById(id);
+        List<DicValue> stages = dicValueService.queryDicValueForCLue(Constant.DIC_CLUE_CONVERT_STAGE);
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("workbench/clue/convert");
+        mv.addObject(Constant.REQUEST_CLUE, clue);
+        mv.addObject(Constant.DIC_CLUE_CONVERT_STAGE, stages);
+        return mv;
+    }
+
+    /**
+     * 查找转换线索的市场活动数据源
+     * @param name 模糊查询条件
+     * @param clueId 线索id
+     * @return json
+     */
+    @RequestMapping("/workbench/clue/showActivityDataSource.do")
+    @ResponseBody
+    public Object showActivityDataSource(String name, String clueId) {
+        return activityService.queryBoundedActivityByName(clueId, name);
+    }
 
 }

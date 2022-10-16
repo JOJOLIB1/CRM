@@ -68,6 +68,11 @@ public class Constant {
     public static final String[] DIC_CLUE_CREATE_LIST = new String[] {"appellation", "clueState", "source"};
 
     /**
+     * 请求域及其供给转换页面的数据字典
+     */
+    public static final String DIC_CLUE_CONVERT_STAGE = "stage";
+
+    /**
      * REQUEST_CLUE 请求域中的clue线索信息
      */
     public static final String REQUEST_CLUE = "clue";

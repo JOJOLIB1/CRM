@@ -79,4 +79,9 @@ public class ActivityServiceImpl implements ActivityService {
     public List<Activity> queryUnboundedActivityByName(String clueId, String name) {
         return mapper.selectUnboundedActivityByName(clueId, name);
     }
+
+    @Override
+    public List<Activity> queryBoundedActivityByName(String clueId, String name) {
+        return mapper.selectBoundedActivityByName(clueId, name);
+    }
 }

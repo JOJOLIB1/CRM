@@ -77,10 +77,18 @@ public interface ActivityService {
     List<Activity> queryActivityByClueId(String clueId);
 
     /**
-     * 根据name模糊查询未被关联的市场活动
+     * 根据name模糊查询被线索未被关联的市场活动
      * @param clueId 线索id
      * @param name 模糊查询条件
      * @return
      */
-    List<Activity> queryUnboundedActivityByName(String clueId,String name);
+    List<Activity> queryUnboundedActivityByName(String clueId, String name);
+
+    /**
+     * 根据name模糊查询被线索关联过的市场活动
+     * @param clueId 线索id
+     * @param name 模糊查询条件
+     * @return
+     */
+    List<Activity> queryBoundedActivityByName(String clueId, String name);
 }

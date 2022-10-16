@@ -455,4 +455,14 @@
       )
   </select>
 
+  <select id="selectBoundedActivityByName" resultMap="BaseResultMap">
+    SELECT ac.id, ac.name, ac.start_date, ac.end_date, us.name AS owner
+    FROM tbl_activity ac JOIN tbl_user us ON ac.owner = us.id
+    WHERE ac.name like '%${name}%' AND ac.id IN (
+        SELECT car.activity_id
+        FROM tbl_clue_activity_relation car
+        WHERE car.clue_id = #{clueId}
+      )
+  </select>
+
 </mapper>

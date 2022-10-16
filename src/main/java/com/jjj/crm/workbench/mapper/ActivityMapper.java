@@ -138,10 +138,18 @@ public interface ActivityMapper {
     List<Activity> selectActivityByClueId(String clueId);
 
     /**
-     * 查询未被联系的市场活动
+     * 查询未被线索联系的市场活动
      * @param clueId 线索id
      * @param name 模糊查询的字段
      * @return
      */
-    List<Activity> selectUnboundedActivityByName(@Param("clueId") String clueId,@Param("name") String name);
+    List<Activity> selectUnboundedActivityByName(@Param("clueId") String clueId, @Param("name") String name);
+
+    /**
+     * 查询关联线索过的市场活动
+     * @param clueId 线索id
+     * @param name 模糊查询的字段
+     * @return
+     */
+    List<Activity> selectBoundedActivityByName(@Param("clueId") String clueId, @Param("name") String name);
 }
