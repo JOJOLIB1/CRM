@@ -1,6 +1,7 @@
 package com.jjj.crm.workbench.controller;
 
 import com.jjj.crm.commons.constants.Constant;
+import com.jjj.crm.commons.constants.ConstantConvert;
 import com.jjj.crm.commons.pojo.ReturnMsg;
 import com.jjj.crm.commons.util.DateUtils;
 import com.jjj.crm.commons.util.UUIDUtils;
@@ -8,10 +9,7 @@ import com.jjj.crm.settings.pojo.DicValue;
 import com.jjj.crm.settings.pojo.User;
 import com.jjj.crm.settings.service.DicValueService;
 import com.jjj.crm.settings.service.UserService;
-import com.jjj.crm.workbench.pojo.Activity;
-import com.jjj.crm.workbench.pojo.Clue;
-import com.jjj.crm.workbench.pojo.ClueActivityRelation;
-import com.jjj.crm.workbench.pojo.ClueRemark;
+import com.jjj.crm.workbench.pojo.*;
 import com.jjj.crm.workbench.service.ActivityService;
 import com.jjj.crm.workbench.service.ClueActivityRelationService;
 import com.jjj.crm.workbench.service.ClueRemarkService;
@@ -24,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -219,4 +218,32 @@ public class ClueController {
         return activityService.queryBoundedActivityByName(clueId, name);
     }
 
+    /**
+     * 转换线索
+     * @param clueId 线索id
+     * @param tran 交易表单数据
+     * @param isTran 是否创建交易
+     * @param session 会话域
+     * @return json
+     */
+    @RequestMapping("/workbench/clue/doConvert.do")
+    @ResponseBody
+    public Object doConvert(String clueId, Tran tran, boolean isTran, HttpSession session) {
+        User user = (User) session.getAttribute(Constant.SESSION_USER);
+        Map<String, Object> map = new HashMap<>();
+        map.put(ConstantConvert.CLUE_ID, clueId);
+        map.put(ConstantConvert.CHANGE_USER, user);
+        map.put(ConstantConvert.IS_TRAN, isTran);
+        map.put(ConstantConvert.TRAN_OBJECT, tran);
+        try {
+            clueService.doConvert(map);
+            returnMsg.setCode(Constant.RETURN_MSG_CODE_SUCCESS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnMsg.setCode(Constant.RETURN_MSG_CODE_FAIL);
+            returnMsg.setMsg(Constant.DEFAULT_FAILURE_MESSAGE);
+            return returnMsg;
+        }
+        return returnMsg;
+    }
 }

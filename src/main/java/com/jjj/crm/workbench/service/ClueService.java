@@ -2,6 +2,8 @@ package com.jjj.crm.workbench.service;
 
 import com.jjj.crm.workbench.pojo.Clue;
 
+import java.util.Map;
+
 /**
  * @className: com.jjj.crm.workbench.service.ClueService
  * @description:
@@ -22,4 +24,10 @@ public interface ClueService {
      * @return
      */
     Clue queryClueById(String id);
+
+    /**
+     * 转换线索
+     * @param map 封装的map集合,含有Tran实体类对象,clueId线索id,isTran是否创建交易
+     */
+    void doConvert(Map<String, Object> map) throws Exception;
 }

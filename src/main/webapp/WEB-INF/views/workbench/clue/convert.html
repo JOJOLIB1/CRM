@@ -48,7 +48,7 @@
 					let htmlStr = ""
 					$.each(array, function () {
 						htmlStr += "<tr>"
-						htmlStr += "<td><input value='"+this.id+"' type=\"radio\" name=\"activity\"/></td>"
+						htmlStr += "<td><input atvName='"+this.name+"' value='"+this.id+"' type=\"radio\" name=\"activity\"/></td>"
 						htmlStr += "<td>"+this.name+"</td>"
 						htmlStr += "<td>"+this.startDate+"</td>"
 						htmlStr += "<td>"+this.endDate+"</td>"
@@ -58,8 +58,53 @@
 					$("#activityToby").html(htmlStr)
 				}
 			})
-
 		})
+
+		//市场活动源选择
+		$("#activityToby").on("click", "input[type='radio']", function () {
+			$("#searchActivityModal").modal("hide")
+			let activityId = this.value
+			let activityName = $(this).attr("atvName")
+			$("#activityId").val(activityId)
+			$("#activityName").val(activityName)
+		})
+
+		// 转换线索
+		$("#doConvertBtn").click(function () {
+			// 收集数据
+			let clueId = $("#clueId").val();
+			let isTran = $("#isCreateTransaction").prop("checked")
+			let money = $.trim($("#amountOfMoney").val())
+			let name = $("#tradeName").val()
+			let expectedDate = $("#expectedClosingDate").val()
+			let stage = $("#stage").val()
+			let activityId = $("#activityId").val()
+			// 验证表单
+			// 发送请求
+			$.ajax({
+				url : "workbench/clue/doConvert.do",
+				type : "post",
+				dataType : "json",
+				data : {
+					clueId : clueId,
+					isTran : isTran,
+					money : money,
+					name : name,
+					expectedDate : expectedDate,
+					stage : stage,
+					activityId : activityId
+				},
+				success : function (data) {
+					if (data.code === "1") {
+						window.location.href = "workbench/clue/toIndex.do"
+					}else {
+						alert(data.msg)
+					}
+				}
+			})
+		})
+
+
 
 
 
@@ -153,8 +198,9 @@
 		    </select>
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
-		    <label for="activity">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" id="showActivityModal" style="text-decoration: none;"><span class="glyphicon glyphicon-search"></span></a></label>
-		    <input type="text" class="form-control" id="activity" placeholder="点击上面搜索" readonly>
+		    <label for="activityName">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" id="showActivityModal" style="text-decoration: none;"><span class="glyphicon glyphicon-search"></span></a></label>
+			  <input type="hidden" id="activityId">
+			  <input type="text" class="form-control" id="activityName" placeholder="点击上面搜索" readonly>
 		  </div>
 		</form>
 		
@@ -165,7 +211,7 @@
 		<b th:text="${clue.owner}"></b>
 	</div>
 	<div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
-		<input class="btn btn-primary" type="button" value="转换">
+		<input class="btn btn-primary" type="button" id="doConvertBtn" value="转换">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input class="btn btn-default" type="button" value="取消">
 	</div>
