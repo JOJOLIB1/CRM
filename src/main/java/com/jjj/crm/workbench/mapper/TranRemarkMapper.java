@@ -1,5 +1,7 @@
 package com.jjj.crm.workbench.mapper;
 
+import com.jjj.crm.workbench.pojo.CustomerRemark;
+import com.jjj.crm.workbench.pojo.Tran;
 import com.jjj.crm.workbench.pojo.TranRemark;
 import com.jjj.crm.workbench.pojo.TranRemarkExample;
 import java.util.List;
@@ -93,4 +95,9 @@ public interface TranRemarkMapper {
      * @mbggenerated Mon Oct 17 20:48:21 CST 2022
      */
     int updateByPrimaryKey(TranRemark record);
+
+    /**
+     * 通过tranRemarkList批量插入数据
+     */
+    int insertByList(List<TranRemark> tranRemarkList);
 }

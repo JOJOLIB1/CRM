@@ -1,10 +1,7 @@
 package com.jjj.crm.commons.constants;
 
 import com.jjj.crm.commons.util.UUIDUtils;
-import com.jjj.crm.workbench.pojo.ClueRemark;
-import com.jjj.crm.workbench.pojo.Contacts;
-import com.jjj.crm.workbench.pojo.Customer;
-import com.jjj.crm.workbench.pojo.CustomerRemark;
+import com.jjj.crm.workbench.pojo.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,12 +28,11 @@ public class ConstantConvert {
      * 转换动态的Remark对象
      * @param clazz 转换目标的class
      * @param clueRemark 转换源
-     * @param customer 可能需要的条件1
-     * @param contacts 可能需要的条件2
+     * @param id 所对应`一`的id
      * @return 对应的目标(动态CustomerRemark或ContactsRemark)
      * @param <T> 泛型T,需要clazz执行
      */
-    public static <T> T convertRemark(Class<T> clazz, ClueRemark clueRemark, Customer customer, Contacts contacts) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
+    public static <T> T convertRemark(Class<T> clazz, ClueRemark clueRemark, String id) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException {
         T t = clazz.newInstance();
         clazz.getDeclaredMethod("setId", String.class).invoke(t, UUIDUtils.getUUID());
         clazz.getDeclaredMethod("setNoteContent", String.class).invoke(t, clueRemark.getNoteContent());
@@ -45,11 +41,12 @@ public class ConstantConvert {
         clazz.getDeclaredMethod("setEditBy", String.class).invoke(t, clueRemark.getEditBy());
         clazz.getDeclaredMethod("setEditTime", String.class).invoke(t, clueRemark.getEditTime());
         clazz.getDeclaredMethod("setEditFlag", String.class).invoke(t, clueRemark.getEditFlag());
-        if (t instanceof CustomerRemark){
-            clazz.getDeclaredMethod("setCustomerId", String.class).invoke(t, customer.getId());
-        }
-        else
-            clazz.getDeclaredMethod("setContactsId", String.class).invoke(t, contacts.getId());
+        if (t instanceof CustomerRemark)
+            clazz.getDeclaredMethod("setCustomerId", String.class).invoke(t, id);
+        else if (t instanceof ContactsRemark)
+            clazz.getDeclaredMethod("setContactsId", String.class).invoke(t, id);
+        else if (t instanceof TranRemark)
+            clazz.getDeclaredMethod("setTranId", String.class).invoke(t, id);
         return t;
     }
 

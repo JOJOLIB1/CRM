@@ -330,4 +330,11 @@
       tran_id = #{tranId,jdbcType=CHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+  <insert id="insertByList">
+    INSERT INTO tbl_tran_remark
+    <foreach collection="list" item="tranRemark" open="VALUES" separator=",">
+      (id = #{tranRemark.id}, note_content = #{tranRemark.noteContent}, create_by = #{tranRemark.createBy}, create_time = #{tranRemark.createTime}, edit_by = #{tranRemark.editBy}, edit_time = #{tranRemark.editTime}, edit_flag = #{tranRemark.editFlag}, tran_id = #{tranRemark.tranId})
+    </foreach>
+  </insert>
 </mapper>

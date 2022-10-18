@@ -330,4 +330,11 @@
       customer_id = #{customerId,jdbcType=CHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+  <insert id="insertByList">
+    INSERT INTO tbl_customer_remark
+    <foreach collection="list" item="customerRemark" open="VALUES" separator=",">
+      (id = #{customerRemark.id}, note_content = #{customerRemark.noteContent}, create_by = #{customerRemark.createBy}, create_time = #{customerRemark.createTime}, edit_by = #{customerRemark.editBy}, edit_time = #{customerRemark.editTime}, edit_flag = #{customerRemark.editFlag}, customer_id = #{customerRemark.customerId})
+    </foreach>
+  </insert>
 </mapper>

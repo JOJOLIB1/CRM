@@ -462,8 +462,24 @@ contentType:默认是true,表示将所哟的参数自动编码为urlencoded,所�
          阶段名字作为key,可能性作为value
          properties配置文件最好不要有特殊符号
     .find("选择器")找子标签
-任务:分页查询(有时间) 回车添加(更改) [转换(参数:线索id,交易表单的参数,交易状态) 主要搞数据字典 < 跳转交易页面+时序图 跳转创建页面+时序图
-    可能性分析+时序图
 
-ps:交易名称是动态的
+    自动补全插件:bs_typeahead
+      静态语法:选择器(容器).typeahead({
+            source : [...]
+        })
+        每当键盘弹起,就在source中比对
+      动态语法:选择器.typeahead({
+            source : function(jquery, process) {
+                process(data) // 赋值给source
+                jquery // 输入框里面的value
+            }
+        })
+        每次键盘弹起,都执行该方法
+
+    创建交易:
+        注意:如果客户不存在,我们先要创建客户
+        @RequestParam封装到map
+
+任务:分页查询(有时间) 回车添加(更改)  主要搞数据字典 < 跳转创建页面+时序图
+    可能性分析+时序图 名称补全+时序图 创建交易+时序图
 

@@ -5,10 +5,7 @@ import com.jjj.crm.commons.constants.ConstantConvert;
 import com.jjj.crm.commons.util.DateUtils;
 import com.jjj.crm.commons.util.UUIDUtils;
 import com.jjj.crm.settings.pojo.User;
-import com.jjj.crm.workbench.mapper.ClueMapper;
-import com.jjj.crm.workbench.mapper.ClueRemarkMapper;
-import com.jjj.crm.workbench.mapper.ContactsMapper;
-import com.jjj.crm.workbench.mapper.CustomerMapper;
+import com.jjj.crm.workbench.mapper.*;
 import com.jjj.crm.workbench.pojo.*;
 import com.jjj.crm.workbench.service.ClueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +32,18 @@ public class ClueServiceImpl implements ClueService {
     ContactsMapper contactsMapper;
     @Autowired
     ClueRemarkMapper clueRemarkMapper;
-
-
+    @Autowired
+    CustomerRemarkMapper customerRemarkMapper;
+    @Autowired
+    ContactsRemarkMapper contactsRemarkMapper;
+    @Autowired
+    ClueActivityRelationMapper clueActivityRelationMapper;
+    @Autowired
+    ContactsActivityRelationMapper contactsActivityRelationMapper;
+    @Autowired
+    TranMapper tranMapper;
+    @Autowired
+    TranRemarkMapper tranRemarkMapper;
 
     @Override
     public int saveCreateClue(Clue clue) {
@@ -99,14 +106,72 @@ public class ClueServiceImpl implements ClueService {
         CustomerRemark customerRemark = null;
         List<ContactsRemark> contactsRemarkList = new ArrayList<>();
         List<CustomerRemark> customerRemarkList = new ArrayList<>();
-        for (ClueRemark clueRemark : clueRemarks) {
-            // 6. 封装多个ContactsRemark
-            contactsRemark = ConstantConvert.convertRemark(ContactsRemark.class, clueRemark, customer, contacts);
-            contactsRemarkList.add(contactsRemark);
-            // 7. 封装多个CustomerRemark
-            customerRemark = ConstantConvert.convertRemark(CustomerRemark.class, clueRemark, customer, contacts);
-            customerRemarkList.add(customerRemark);
+        if (clueRemarks != null && !clueRemarks.isEmpty()) {
+            for (ClueRemark clueRemark : clueRemarks) {
+                // 6. 封装多个ContactsRemark
+                contactsRemark = ConstantConvert.convertRemark(ContactsRemark.class, clueRemark, contacts.getId());
+                contactsRemarkList.add(contactsRemark);
+                // 7. 封装多个CustomerRemark
+                customerRemark = ConstantConvert.convertRemark(CustomerRemark.class, clueRemark, customer.getId());
+                customerRemarkList.add(customerRemark);
+            }
+            contactsRemarkMapper.insertByList(contactsRemarkList);
+            customerRemarkMapper.insertByList(customerRemarkList);
+            // --------------------------------------------
         }
-
+        // 8. 根据clueId把和市场活动的关联关系原原本本查出来
+        ClueActivityRelationExample clueActivityRelationExample = new ClueActivityRelationExample();
+        clueActivityRelationExample.createCriteria().andClueIdEqualTo(clueId);
+        List<ClueActivityRelation> clueActivityRelationList = clueActivityRelationMapper.selectByExample(clueActivityRelationExample);
+        if (clueActivityRelationList != null && !clueActivityRelationList.isEmpty()) {
+            // 9. 把关联关系赋予联系人
+            ContactsActivityRelation contactsActivityRelation;
+            List<ContactsActivityRelation> contactsActivityRelationList = new ArrayList<>();
+            for (ClueActivityRelation clueActivityRelation : clueActivityRelationList) {
+                contactsActivityRelation = new ContactsActivityRelation();
+                contactsActivityRelation.setId(UUIDUtils.getUUID());
+                contactsActivityRelation.setActivityId(clueActivityRelation.getActivityId());
+                contactsActivityRelation.setContactsId(contacts.getId());
+                contactsActivityRelationList.add(contactsActivityRelation);
+            }
+            // 存在莫名奇妙的BUG,不得不放弃
+//            contactsActivityRelationMapper.insertByList(contactsActivityRelationList);
+            for (ContactsActivityRelation relation : contactsActivityRelationList) {
+                contactsActivityRelationMapper.insertSelective(relation);
+            }
+        }
+        // 10. 判断是否要创建交易
+        boolean isTran = (boolean) map.get(ConstantConvert.IS_TRAN);
+        if (isTran) {
+            // 11. 封装创建交易
+            Tran tran = (Tran) map.get(ConstantConvert.TRAN_OBJECT);
+            tran.setId(UUIDUtils.getUUID());
+            tran.setOwner(user.getId());
+            tran.setCustomerId(customer.getId());
+            tran.setContactsId(contacts.getId());
+            tran.setCreateBy(user.getId());
+            tran.setCreateTime(DateUtils.formatDateTime());
+            tranMapper.insertSelective(tran);
+            // 12. 封装交易备注
+            if (clueRemarks != null && !clueRemarks.isEmpty()) {
+                TranRemark tranRemark = null;
+                List<TranRemark> tranRemarkList = new ArrayList<>();
+                for (ClueRemark clueRemark : clueRemarks) {
+                    tranRemark = ConstantConvert.convertRemark(TranRemark.class, clueRemark, tran.getId());
+                    tranRemarkList.add(tranRemark);
+                }
+                tranRemarkMapper.insertByList(tranRemarkList);
+            }
+        }
+        // 13. 删除clueId下所有的备注
+        clueRemarkExample.clear();
+        clueRemarkExample.createCriteria().andClueIdEqualTo(clueId);
+        clueRemarkMapper.deleteByExample(clueRemarkExample);
+        // 14. 删除所有的关联关系
+        clueActivityRelationExample.clear();
+        clueActivityRelationExample.createCriteria().andClueIdEqualTo(clueId);
+        clueActivityRelationMapper.deleteByExample(clueActivityRelationExample);
+        // 15. 删除线索
+        clueMapper.deleteByPrimaryKey(clueId);
     }
 }

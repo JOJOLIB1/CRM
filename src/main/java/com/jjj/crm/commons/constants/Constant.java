@@ -82,4 +82,10 @@ public class Constant {
      */
     public static final String REQUEST_CLUE_REMARK = "clueRemarks";
 
+    public static final String DIC_TRAN_STAGE = "stage";
+
+    public static final String DIC_TRAN_SOURCE = "source";
+
+    public static final String DIC_TRAN_TRANSACTION_TYPE = "transactionType";
+
 }

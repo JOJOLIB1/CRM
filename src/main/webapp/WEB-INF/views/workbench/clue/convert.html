@@ -103,7 +103,10 @@
 				}
 			})
 		})
-
+		// 返回页面
+		$("#back").click(function () {
+			window.history.back()
+		})
 
 
 
@@ -213,7 +216,7 @@
 	<div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
 		<input class="btn btn-primary" type="button" id="doConvertBtn" value="转换">
 		&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="btn btn-default" type="button" value="取消">
+		<input class="btn btn-default" type="button" id="back" value="取消">
 	</div>
 </body>
 </html>

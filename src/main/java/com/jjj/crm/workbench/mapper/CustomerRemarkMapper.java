@@ -93,4 +93,9 @@ public interface CustomerRemarkMapper {
      * @mbggenerated Mon Oct 17 20:48:21 CST 2022
      */
     int updateByPrimaryKey(CustomerRemark record);
+
+    /**
+     * 通过customerRemarkList批量插入数据
+     */
+    int insertByList(List<CustomerRemark> customerRemarkList);
 }

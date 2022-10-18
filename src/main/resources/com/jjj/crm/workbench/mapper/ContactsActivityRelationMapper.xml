@@ -253,4 +253,11 @@
       activity_id = #{activityId,jdbcType=CHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+  <insert id="insertByList">
+    INSERT INTO tbl_contacts_activity_relation
+    <foreach collection="list" separator="," open="VALUES" item="obj">
+      (#{obj.id}, #{obj.contactsId}, #{obj.activityId})
+    </foreach>
+  </insert>
 </mapper>

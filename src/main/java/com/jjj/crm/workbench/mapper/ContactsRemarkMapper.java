@@ -93,4 +93,11 @@ public interface ContactsRemarkMapper {
      * @mbggenerated Mon Oct 17 20:48:21 CST 2022
      */
     int updateByPrimaryKey(ContactsRemark record);
+
+    /**
+     * 通过List集合批量插入contactsRemark对象
+     * @param contactsRemarkList contactRemark集合
+     * @return 影响函数
+     */
+    int insertByList(List<ContactsRemark> contactsRemarkList);
 }
