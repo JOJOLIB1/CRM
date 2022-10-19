@@ -60,7 +60,7 @@ public class ClueController {
         // 获取对应数据字典相关的信息
         Map<String, Object> dicMap = null;
         for (String dic : Constant.DIC_CLUE_CREATE_LIST) {
-            mv.addObject(dic, dicValueService.queryDicValueForCLue(dic));
+            mv.addObject(dic, dicValueService.queryDicValueByTypeCode(dic));
         }
         mv.addObject(Constant.REQUEST_ALL_USERS, users);
         mv.setViewName("workbench/clue/index");
@@ -198,7 +198,7 @@ public class ClueController {
     @RequestMapping("/workbench/clue/toConvert.do")
     public ModelAndView toConvert(String id) {
         Clue clue = clueService.queryClueById(id);
-        List<DicValue> stages = dicValueService.queryDicValueForCLue(Constant.DIC_CLUE_CONVERT_STAGE);
+        List<DicValue> stages = dicValueService.queryDicValueByTypeCode(Constant.DIC_CLUE_CONVERT_STAGE);
         ModelAndView mv = new ModelAndView();
         mv.setViewName("workbench/clue/convert");
         mv.addObject(Constant.REQUEST_CLUE, clue);

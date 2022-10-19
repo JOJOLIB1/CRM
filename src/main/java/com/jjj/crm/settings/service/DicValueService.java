@@ -17,5 +17,5 @@ public interface DicValueService {
      * @param typeCode
      * @return
      */
-    List<DicValue> queryDicValueForCLue(String typeCode);
+    List<DicValue> queryDicValueByTypeCode(String typeCode);
 }

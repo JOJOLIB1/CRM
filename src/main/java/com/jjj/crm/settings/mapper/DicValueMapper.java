@@ -103,6 +103,6 @@ public interface DicValueMapper {
      * @return
      */
     // making for myself
-    List<DicValue> selectClueDicByTypeCodes(String typeCode);
+    List<DicValue> selectDicByTypeCodes(String typeCode);
 
 }

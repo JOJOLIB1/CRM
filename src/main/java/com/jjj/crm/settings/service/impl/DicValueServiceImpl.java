@@ -21,7 +21,7 @@ public class DicValueServiceImpl implements DicValueService {
     private DicValueMapper mapper;
 
     @Override
-    public List<DicValue> queryDicValueForCLue(String typeCode) {
-        return mapper.selectClueDicByTypeCodes(typeCode);
+    public List<DicValue> queryDicValueByTypeCode(String typeCode) {
+        return mapper.selectDicByTypeCodes(typeCode);
     }
 }
