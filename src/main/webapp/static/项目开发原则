@@ -506,5 +506,3 @@ contentType:默认是true,表示将所哟的参数自动编码为urlencoded,所�
         封装实体类对象比Map集合方便
         非组函数字段必须在group by 中有一份
 
-任务:  统计图表+时序图
-
