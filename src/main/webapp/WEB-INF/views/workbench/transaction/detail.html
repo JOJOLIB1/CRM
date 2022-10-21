@@ -82,6 +82,11 @@
                         }
                     }, 100);
                 });
+		$("#cStage span").click(function () {
+			let stage = $(this).attr("data-stage")
+			let id = $("#tranId").val()
+			window.location.href = "workbench/transaction/changeStage.do?id=" + id + "&stage=" + stage
+		})
 	});
 	
 	
@@ -95,7 +100,7 @@
 	<div style="position: relative; top: 35px; left: 10px;">
 		<a href="javascript:void(0);" onclick="window.history.back();"><span class="glyphicon glyphicon-arrow-left" style="font-size: 20px; color: #DDDDDD"></span></a>
 	</div>
-	
+	<input id="tranId" th:value="${tran.id}" type="hidden">
 	<!-- 大标题 -->
 	<div style="position: relative; left: 40px; top: -30px;">
 		<div class="page-header">
@@ -110,10 +115,10 @@
 	<!-- 阶段状态 -->
 	<div style="position: relative; left: 40px; top: -50px;">
 		阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<span th:each="curStage : ${stages}">
-			<span th:if="${curStage.value} != ${tran.stage} and ${curStage.orderNo} < ${tran.orderNo}" class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" th:attr="data-content=${curStage.value}" style="color: #90F790;"></span>
-			<span th:if="${curStage.value} == ${tran.stage}" class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" th:attr="data-content=${curStage.value}" style="color: #90F790;"></span>
-			<span th:if="${curStage.value} != ${tran.stage} and ${curStage.orderNo} > ${tran.orderNo}" class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" th:attr="data-content=${curStage.value}"></span>
+		<span id="cStage" th:each="curStage : ${stages}">
+			<span th:if="${curStage.value} != ${tran.stage} and ${curStage.orderNo} < ${tran.orderNo}" class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" th:attr="data-content=${curStage.value}, data-stage=${curStage.id}" style="color: #90F790;"></span>
+			<span th:if="${curStage.value} == ${tran.stage}"  class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" th:attr="data-content=${curStage.value}, data-stage=${curStage.id}" style="color: #90F790;"></span>
+			<span th:if="${curStage.value} != ${tran.stage} and ${curStage.orderNo} > ${tran.orderNo}"  class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" th:attr="data-content=${curStage.value}, data-stage=${curStage.id}"></span>
 			------------
 		</span>
 		<span class="closingDate" th:text="${tran.expectedDate}"></span>
@@ -204,32 +209,33 @@
 		</div>
 		
 		<!-- 备注1 -->
-		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="static/image/user-thumbnail.png" style="width: 30px; height:30px;">
+		<div class="remarkDiv" th:id="'div_'+${remark.tranid}" style="height: 60px;" th:each="remark : ${tranRemarks}">
+			<img th:title="remark.createBy" src="static/image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>哎呦！</h5>
-				<font color="gray">交易</font> <font color="gray">-</font> <b>动力节点-交易01</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
+				<h5 th:text="${remark.noteContent}"></h5>
+				<font color="gray">交易</font> <font color="gray">-</font> <b th:text="${tran.name}"></b> <small style="color: gray;" th:if="${remark.flag} == '0'" th:text="${remark.createTime}+'由'+${remark.createBy}+'创建'"></small>
+				<font color="gray">交易</font> <font color="gray">-</font> <b th:text="${tran.name}"></b> <small style="color: gray;" th:unless="${remark.flag} == '0'" th:text="${remark.editTime}+'由'+${remark.editBy}+'修改'"></small>
 				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+					<a class="myHref" th:attr="data-tranId=${remark.tranId}" name="editA" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+					<a class="myHref" th:attr="data-tranId=${remark.tranId}" name="deleteA" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 				</div>
 			</div>
 		</div>
 		
-		<!-- 备注2 -->
-		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="static/image/user-thumbnail.png" style="width: 30px; height:30px;">
-			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>呵呵！</h5>
-				<font color="gray">交易</font> <font color="gray">-</font> <b>动力节点-交易01</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
-				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				</div>
-			</div>
-		</div>
+<!--		&lt;!&ndash; 备注2 &ndash;&gt;-->
+<!--		<div class="remarkDiv" style="height: 60px;">-->
+<!--			<img title="zhangsan" src="static/image/user-thumbnail.png" style="width: 30px; height:30px;">-->
+<!--			<div style="position: relative; top: -40px; left: 40px;" >-->
+<!--				<h5>呵呵！</h5>-->
+<!--				<font color="gray">交易</font> <font color="gray">-</font> <b>动力节点-交易01</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>-->
+<!--				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">-->
+<!--					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>-->
+<!--					&nbsp;&nbsp;&nbsp;&nbsp;-->
+<!--					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
@@ -260,29 +266,13 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>资质审查</td>
-							<td>5,000</td>
-							<td>2017-02-07</td>
-							<td>2016-10-10 10:10:10</td>
-							<td>zhangsan</td>
-						</tr>
-						<tr>
-							<td>需求分析</td>
-							<td>5,000</td>
-							<td>20</td>
-							<td>2017-02-07</td>
-							<td>2016-10-20 10:10:10</td>
-							<td>zhangsan</td>
-						</tr>
-						<tr>
-							<td>谈判/复审</td>
-							<td>5,000</td>
-							<td>90</td>
-							<td>2017-02-07</td>
-							<td>2017-02-09 10:10:10</td>
-							<td>zhangsan</td>
-						</tr>
+					<tr th:each="his : ${tranHistories}">
+						<td th:text="${his.stage}"></td>
+						<td th:text="${his.money}"></td>
+						<td th:text="${his.expectedDate}"></td>
+						<td th:text="${his.createTime}"></td>
+						<td th:text="${his.createBy}"></td>
+					</tr>
 					</tbody>
 				</table>
 			</div>

@@ -1,7 +1,9 @@
 package com.jjj.crm.workbench.service;
 
+import com.jjj.crm.workbench.pojo.Chart;
 import com.jjj.crm.workbench.pojo.Tran;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,4 +22,15 @@ public interface TranService {
      * 根据id查询交易
      */
     Tran queryTranById(String id);
+
+
+    /**
+     * 更改新的阶段
+     */
+    int saveNewStage(Tran tran);
+
+    /**
+     * 根据阶段查询各个阶段的交易数
+     */
+    List<Chart> queryCountOfTranGroupByStage();
 }

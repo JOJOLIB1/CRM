@@ -136,5 +136,9 @@ public class TranController {
         return mv;
     }
 
-
+    @RequestMapping("/workbench/transaction/changeStage.do")
+    public String changeStage(Tran tran) {
+        tranService.saveNewStage(tran);
+        return "workbench/transaction/index";
+    }
 }

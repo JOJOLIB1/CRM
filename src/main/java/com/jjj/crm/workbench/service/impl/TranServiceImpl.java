@@ -9,6 +9,7 @@ import com.jjj.crm.workbench.mapper.CustomerMapper;
 import com.jjj.crm.workbench.mapper.TranHistoryMapper;
 import com.jjj.crm.workbench.mapper.TranMapper;
 import com.jjj.crm.workbench.mapper.TranRemarkMapper;
+import com.jjj.crm.workbench.pojo.Chart;
 import com.jjj.crm.workbench.pojo.Customer;
 import com.jjj.crm.workbench.pojo.Tran;
 import com.jjj.crm.workbench.pojo.TranHistory;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -75,5 +77,15 @@ public class TranServiceImpl implements TranService {
     @Override
     public Tran queryTranById(String id) {
         return tranMapper.selectTranById(id);
+    }
+
+    @Override
+    public int saveNewStage(Tran tran) {
+        return tranMapper.updateByPrimaryKeySelective(tran);
+    }
+
+    @Override
+    public List<Chart> queryCountOfTranGroupByStage() {
+        return tranMapper.selectCountOfTranGroupByStage();
     }
 }

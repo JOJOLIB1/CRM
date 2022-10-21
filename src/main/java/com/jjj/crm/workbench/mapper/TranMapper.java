@@ -1,5 +1,6 @@
 package com.jjj.crm.workbench.mapper;
 
+import com.jjj.crm.workbench.pojo.Chart;
 import com.jjj.crm.workbench.pojo.Tran;
 import com.jjj.crm.workbench.pojo.TranExample;
 import java.util.List;
@@ -98,4 +99,9 @@ public interface TranMapper {
      * 根据id查交易
      */
     Tran selectTranById(String id);
+
+    /**
+     * 查询每个阶段的交易数量
+     */
+    List<Chart> selectCountOfTranGroupByStage();
 }
