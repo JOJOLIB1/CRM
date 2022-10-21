@@ -495,6 +495,17 @@ contentType:默认是true,表示将所哟的参数自动编码为urlencoded,所�
             <span class="// 显示图标 glyphicon // 图标样式glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" //悬停显示的数据data-content="资质审查" //颜色style="color: #90F790;"></span>
             		-----------
         把orderNo查出来比较就行了
+    echarts:
+        title:标题{text}
+        tooltip:提示框{}
+        legend:图例['','']
+        xAxis:横坐标{['','']}
+        yAxis:纵坐标{[]}
+        series:系列[{name,type,data}]
+            要点:系列名称必须和图例保持一致
+        封装实体类对象比Map集合方便
+        非组函数字段必须在group by 中有一份
 
-任务: 名称补全+时序图 创建交易+时序图 交易详情页面+时序图(注意要把可能性塞进去) 图标(动态变阶段)+时序图补充
+任务:   交易详情页面 图标(动态变阶段)+时序图补充
+       统计图表+时序图
 

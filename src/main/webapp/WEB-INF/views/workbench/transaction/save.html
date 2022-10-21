@@ -10,6 +10,7 @@
 <script type="text/javascript" src="static/jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="static/jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="static/jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="static/jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
 <script type="text/javascript">
 	$(function () {
 		$("#create-transactionStage").change(function () {
@@ -26,6 +27,70 @@
 					$("#create-possibility").val(possibility)
 				}
 			})
+		})
+		$("#create-accountName").typeahead({
+			source : function (jquery, process) {
+				$.ajax({
+					url : "workbench/transaction/autoFillCustomer.do",
+					data : {
+						name : jquery
+					},
+					type : "post",
+					dataType : "json",
+					success : function (data) {
+						process(data)
+					}
+				})
+			}
+		})
+		$("#back").click(function () {
+			window.history.back()
+		})
+		$("#doSave").click(function () {
+		  	let owner = $("#create-transactionOwner").val()
+			let money = $("#create-amountOfMoney").val()
+			let name = $("#create-transactionName").val()
+			let expectedDate = $("#create-expectedClosingDate").val()
+			let customerName = $("#create-accountName").val()
+			let stage = $("#create-transactionStage").val()
+			let type = $("#create-transactionType").val()
+			let source = $("#create-clueSource").val()
+			let activityId = $("#activityId").val()
+			let contactsId = $("#contactsId").val()
+			let description = $("#create-describe").val()
+			let contactSummary = $("#create-contactSummary").val()
+			let nextContactTime = $("#create-nextContactTime").val()
+			// 验证数据
+
+			// 发送请求
+			$.ajax({
+				url : "workbench/transaction/doSaveTran.do",
+				type : "post",
+				dataType : "json",
+				data : {
+					owner : owner,
+					money : money,
+					name : name,
+					expectedDate : expectedDate,
+					customerName : customerName,
+					stage : stage,
+					type : type,
+					source : source,
+					activityId : activityId,
+					contactsId : contactsId,
+					description : description,
+					contactSummary : contactSummary,
+					nextContactTime : nextContactTime
+				},
+				success : function (data) {
+					if (data.code === "1") {
+						window.location.href = "workbench/transaction/toIndex.do"
+					}else {
+						alert(data.msg)
+					}
+				}
+			})
+
 		})
 	})
 </script>
@@ -136,8 +201,8 @@
 	<div style="position:  relative; left: 30px;">
 		<h3>创建交易</h3>
 	  	<div style="position: relative; top: -40px; left: 70%;">
-			<button type="button" class="btn btn-primary">保存</button>
-			<button type="button" class="btn btn-default">取消</button>
+			<button type="button" class="btn btn-primary" id="doSave">保存</button>
+			<button type="button" class="btn btn-default" id="back">取消</button>
 		</div>
 		<hr style="position: relative; top: -40px;">
 	</div>
@@ -147,7 +212,7 @@
 			<div class="col-sm-10" style="width: 300px;">
 				<select class="form-control" id="create-transactionOwner">
 					<option value=""></option>
-					<option th:each="us : ${reqUsers}" th:text="us.name" th:value="us.id"></option>
+					<option th:each="us : ${reqUsers}" th:text="${us.name}" th:value="${us.id}"></option>
 				</select>
 			</div>
 			<label for="create-amountOfMoney" class="col-sm-2 control-label">金额</label>
@@ -216,7 +281,7 @@
 			<div class="col-sm-10" style="width: 300px;">
 				<!-- 被写死 -->
 				<input type="hidden" id="contactsId" value="a9fe1f18be2c479d8d378c4f4a74b487">
-				<input type="text" class="form-control" id="create-contactsName">
+				<input type="text" class="form-control" id="create-contactsName" value="ikun">
 			</div>
 		</div>
 		

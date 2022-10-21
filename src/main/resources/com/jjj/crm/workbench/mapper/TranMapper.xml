@@ -488,4 +488,20 @@
       next_contact_time = #{nextContactTime,jdbcType=CHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+  <select id="selectTranById" resultMap="BaseResultMap">
+    SELECT u1.name AS owner, tr.money, tr.name, tr.expected_date, cu.name AS customer_id, dic.value AS stage, dic1.value AS type,
+           dic2.value AS source, ac.name AS activity_id, co.fullname AS contacts_id, u2.name AS create_by, tr.create_time,
+           u3.name AS edit_by, tr.edit_time, tr.description, tr.contact_summary, tr.next_contact_time, dic.order_no AS orderNO
+    FROM tbl_tran tr JOIN tbl_user u1 ON u1.id = tr.owner
+                     JOIN tbl_customer cu ON cu.id = tr.customer_id
+                     JOIN tbl_dic_value dic ON dic.id = tr.stage
+                     LEFT JOIN tbl_dic_value dic1 ON dic1.id = tr.type
+                     LEFT JOIN tbl_dic_value dic2 ON dic2.id = tr.source
+                     LEFT JOIN tbl_activity ac ON ac.id = tr.activity_id
+                     LEFT JOIN tbl_contacts co ON co.id = tr.contacts_id
+                     JOIN tbl_user u2 ON u2.id = tr.create_by
+                     LEFT JOIN tbl_user u3 on u3.id = tr.edit_by
+    WHERE tr.id = #{id}
+  </select>
 </mapper>

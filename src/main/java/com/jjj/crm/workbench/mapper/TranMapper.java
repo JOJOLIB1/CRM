@@ -93,4 +93,9 @@ public interface TranMapper {
      * @mbggenerated Mon Oct 17 20:48:21 CST 2022
      */
     int updateByPrimaryKey(Tran record);
+
+    /**
+     * 根据id查交易
+     */
+    Tran selectTranById(String id);
 }

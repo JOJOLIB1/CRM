@@ -100,4 +100,9 @@ public interface TranRemarkMapper {
      * 通过tranRemarkList批量插入数据
      */
     int insertByList(List<TranRemark> tranRemarkList);
+
+    /**
+     * 根据交易id春训对应的交易备注
+     */
+    List<TranRemark> selectTranRemarkByTranId(String tranId);
 }

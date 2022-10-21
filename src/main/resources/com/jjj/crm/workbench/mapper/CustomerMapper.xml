@@ -410,4 +410,17 @@
       address = #{address,jdbcType=VARCHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+    <select id="selectCustomerByName" resultType="string">
+        SELECT name
+        FROM tbl_customer
+        WHERE name like '%${name}%'
+    </select>
+
+    <select id="selectCustomerIdByName" resultType="string">
+        SELECT id
+        FROM tbl_customer
+        WHERE name = #{name}
+    </select>
+
 </mapper>

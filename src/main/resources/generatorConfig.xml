@@ -32,12 +32,6 @@
         <!-- 逆向分析的表 -->
         <!-- tableName设置为*号，可以对应所有表，此时不写domainObjectName -->
         <!-- domainObjectName属性指定生成出来的实体类的类名 -->
-        <table tableName="tbl_customer" domainObjectName="Customer"/>
-        <table tableName="tbl_customer_remark" domainObjectName="CustomerRemark"/>
-        <table tableName="tbl_contacts" domainObjectName="Contacts"/>
-        <table tableName="tbl_contacts_remark" domainObjectName="ContactsRemark"/>
-        <table tableName="tbl_contacts_activity_relation" domainObjectName="ContactsActivityRelation"/>
-        <table tableName="tbl_tran" domainObjectName="Tran"/>
-        <table tableName="tbl_tran_remark" domainObjectName="TranRemark"/>
+        <table tableName="tbl_tran_history" domainObjectName="TranHistory"/>
     </context>
 </generatorConfiguration>

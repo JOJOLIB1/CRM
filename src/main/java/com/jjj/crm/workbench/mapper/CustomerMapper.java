@@ -93,4 +93,14 @@ public interface CustomerMapper {
      * @mbggenerated Mon Oct 17 20:48:21 CST 2022
      */
     int updateByPrimaryKey(Customer record);
+
+    /**
+     * 根据name模糊查询
+     */
+    List<String> selectCustomerByName(String name);
+
+    /**
+     * 根据name模糊查询客户id
+     */
+    String selectCustomerIdByName(String name);
 }

@@ -285,9 +285,11 @@
   </update>
 
   <select id="selectDicByTypeCodes" resultType="dicValue">
-    SELECT tdv.id, tdv.value
+    SELECT tdv.id, tdv.value, tdv.order_no as orderNo
     FROM tbl_dic_value tdv
     WHERE type_code = #{typeCode}
     ORDER BY tdv.order_no
   </select>
+
+
 </mapper>
